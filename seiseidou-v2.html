@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F5F0E8">
+<title>岩崎精正堂</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Sans+SC:wght@300;400;700&family=Noto+Sans+Arabic:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --washi:#F5F0E8; --washi-dark:#EAE3D5; --sumi:#1A1410; --sumi-mid:#3D3028;
+  --bengara:#8B3A22; --kincha:#A8873A; --koke:#5E6B52; --hai:#9E9080;
+  --shiro:#FAF7F2; --shadow:rgba(26,20,16,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Shippori Mincho B1',serif;
+  background:var(--washi);color:var(--sumi);
+  min-height:100vh;max-width:430px;margin:0 auto;
+  position:relative;overflow-x:hidden;
+  transition:font-family 0.3s;
+}
+body[lang="zh"]{font-family:'Noto Sans SC','Shippori Mincho B1',serif}
+body[lang="ar"]{font-family:'Noto Sans Arabic',sans-serif}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1000;opacity:0.6;
+}
+.screen{display:none;min-height:100vh;padding-bottom:80px;animation:fadeIn 0.4s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* HEADER */
+.app-header{padding:52px 24px 20px;background:var(--washi);position:sticky;top:0;z-index:100}
+.app-header::after{content:'';position:absolute;bottom:0;left:24px;right:24px;height:1px;background:linear-gradient(90deg,transparent,var(--hai),transparent)}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start}
+.logo-mark{font-size:11px;letter-spacing:0.2em;color:var(--hai)}
+.logo-main{font-size:20px;font-weight:800;letter-spacing:0.05em;color:var(--sumi);line-height:1}
+.logo-en{font-family:'Cormorant Garamond',serif;font-size:11px;font-style:italic;color:var(--hai);letter-spacing:0.1em;margin-top:3px}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.header-badge{background:var(--bengara);color:var(--shiro);font-size:10px;padding:4px 10px;letter-spacing:0.12em}
+
+/* LANGUAGE SWITCHER */
+.lang-switcher{display:flex;gap:4px;align-items:center}
+.lang-btn{
+  font-size:10px;padding:3px 7px;border:1px solid var(--washi-dark);
+  color:var(--hai);cursor:pointer;background:var(--shiro);
+  letter-spacing:0.05em;transition:all 0.2s;font-family:inherit;
+}
+.lang-btn.active{border-color:var(--sumi);color:var(--sumi);background:var(--washi-dark)}
+[dir="rtl"] .lang-btn{letter-spacing:0}
+
+/* PLAN BAR */
+.plan-bar{margin:16px 24px 0;padding:10px 16px;background:var(--washi-dark);border-left:3px solid var(--kincha);display:flex;justify-content:space-between;align-items:center}
+[dir="rtl"] .plan-bar{border-left:none;border-right:3px solid var(--kincha)}
+.plan-label{font-size:11px;letter-spacing:0.1em;color:var(--hai)}
+.plan-name{font-size:13px;font-weight:600;color:var(--kincha);letter-spacing:0.08em}
+.plan-cycle{font-size:11px;color:var(--hai)}
+
+/* SECTION TITLE */
+.section-title{padding:28px 24px 14px;display:flex;justify-content:space-between;align-items:baseline}
+.section-title h2{font-size:15px;font-weight:600;letter-spacing:0.12em;color:var(--sumi);position:relative}
+.section-title h2::before{content:'—';color:var(--bengara);margin-right:8px;font-weight:400}
+[dir="rtl"] .section-title h2::before{margin-right:0;margin-left:8px}
+.section-more{font-size:11px;color:var(--hai);letter-spacing:0.1em;cursor:pointer}
+
+/* FEATURED */
+.current-work{margin:0 24px;cursor:pointer;position:relative;overflow:hidden}
+.current-work-image{width:100%;height:260px;background:var(--sumi-mid);position:relative;overflow:hidden}
+.current-work-image canvas{width:100%;height:100%}
+.current-work-overlay{position:absolute;bottom:0;left:0;right:0;padding:40px 20px 20px;background:linear-gradient(transparent,rgba(26,20,16,0.82))}
+.work-tag{font-size:10px;letter-spacing:0.2em;color:var(--kincha);margin-bottom:6px;display:block}
+.work-title-large{font-size:22px;font-weight:800;color:var(--shiro);letter-spacing:0.06em;line-height:1.3}
+.work-subtitle{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(250,247,242,0.6);margin-top:4px}
+.current-work-info{padding:16px 0;display:flex;gap:20px}
+.info-item{flex:1}
+.info-label{font-size:10px;letter-spacing:0.15em;color:var(--hai);margin-bottom:3px}
+.info-value{font-size:13px;font-weight:600;color:var(--sumi);letter-spacing:0.05em}
+
+/* GALLERY */
+.gallery-grid{padding:0 24px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gallery-item{cursor:pointer}
+.gallery-item-image{width:100%;aspect-ratio:3/4;position:relative;overflow:hidden}
+.gallery-item-image canvas{width:100%!important;height:100%!important}
+.gallery-item-info{padding:10px 0 6px}
+.gallery-item-title{font-size:13px;font-weight:600;letter-spacing:0.06em;color:var(--sumi);line-height:1.4}
+.gallery-item-meta{font-size:10px;color:var(--hai);margin-top:3px;letter-spacing:0.08em}
+.gallery-item-price{font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--kincha);margin-top:4px}
+.availability-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--koke);margin-right:5px;vertical-align:middle}
+.availability-dot.taken{background:var(--bengara)}
+
+/* SEARCH */
+.search-bar{margin:12px 24px 0;display:flex;align-items:center;border-bottom:1px solid var(--sumi);padding-bottom:10px;gap:10px}
+.search-icon{font-size:14px;color:var(--hai)}
+.search-input{background:none;border:none;font-family:inherit;font-size:14px;color:var(--sumi);flex:1;outline:none;letter-spacing:0.06em}
+.search-input::placeholder{color:var(--hai)}
+.filter-chips{display:flex;gap:8px;padding:14px 24px 4px;overflow-x:auto;scrollbar-width:none}
+.filter-chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;font-size:11px;letter-spacing:0.1em;padding:5px 14px;border:1px solid var(--washi-dark);color:var(--hai);cursor:pointer;white-space:nowrap;transition:all 0.2s;background:var(--shiro)}
+.chip.active{border-color:var(--sumi);color:var(--sumi);background:var(--washi-dark)}
+
+/* DETAIL */
+.detail-header{position:sticky;top:0;z-index:100;padding:52px 24px 16px;background:var(--washi)}
+.back-btn{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--hai);cursor:pointer;letter-spacing:0.1em;background:none;border:none;font-family:inherit}
+.detail-image-container{margin:0 24px 24px;position:relative}
+.detail-image{width:100%;height:320px;position:relative;overflow:hidden}
+.detail-image canvas{width:100%!important;height:100%!important}
+.detail-content{padding:0 24px}
+.detail-tag-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.detail-tag{font-size:10px;letter-spacing:0.15em;padding:4px 10px;border:1px solid var(--hai);color:var(--hai)}
+.detail-tag.accent{border-color:var(--bengara);color:var(--bengara);background:rgba(139,58,34,0.05)}
+.detail-title{font-size:26px;font-weight:800;letter-spacing:0.05em;line-height:1.3;color:var(--sumi);margin-bottom:6px}
+.detail-title-en{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:var(--hai);letter-spacing:0.08em;margin-bottom:20px;display:block}
+.detail-divider{width:40px;height:1px;background:var(--bengara);margin:20px 0}
+.detail-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.detail-meta-label{font-size:10px;letter-spacing:0.15em;color:var(--hai);margin-bottom:4px}
+.detail-meta-value{font-size:14px;font-weight:600;color:var(--sumi);letter-spacing:0.05em}
+.story-section{margin-bottom:28px}
+.story-heading{font-size:12px;letter-spacing:0.2em;color:var(--bengara);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.story-heading::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--bengara),transparent);opacity:0.3}
+[dir="rtl"] .story-heading::after{background:linear-gradient(270deg,var(--bengara),transparent)}
+.story-text{font-size:14px;line-height:2;color:var(--sumi-mid);letter-spacing:0.04em}
+[dir="rtl"] .story-text{letter-spacing:0;line-height:2.2}
+
+/* RESTORATION TIMELINE BUTTON */
+.restoration-entry-btn{
+  margin:0 0 24px;padding:18px 20px;
+  background:var(--washi-dark);border-left:3px solid var(--koke);
+  cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+  transition:background 0.2s;
+}
+[dir="rtl"] .restoration-entry-btn{border-left:none;border-right:3px solid var(--koke)}
+.restoration-entry-btn:active{background:var(--washi)}
+.reb-left{}
+.reb-label{font-size:10px;letter-spacing:0.15em;color:var(--koke);margin-bottom:4px}
+.reb-title{font-size:15px;font-weight:600;color:var(--sumi);letter-spacing:0.06em}
+.reb-arrow{font-size:18px;color:var(--koke)}
+
+.rent-action{
+  margin:0 24px 16px;padding:18px 20px;
+  background:var(--sumi);display:flex;justify-content:space-between;
+  align-items:center;cursor:pointer;transition:background 0.2s;
+}
+.rent-action:active{background:var(--sumi-mid)}
+.rent-plan-note{font-size:10px;letter-spacing:0.12em;color:var(--hai);margin-bottom:3px}
+.rent-cta{font-size:16px;font-weight:800;color:var(--shiro);letter-spacing:0.08em}
+.rent-arrow{font-size:20px;color:var(--kincha)}
+
+/* ===== RESTORATION TIMELINE SCREEN ===== */
+.timeline-header{
+  background:var(--sumi);padding:52px 24px 24px;
+  position:sticky;top:0;z-index:100;
+}
+.timeline-back{
+  display:flex;align-items:center;gap:8px;font-size:13px;
+  color:rgba(250,247,242,0.6);cursor:pointer;background:none;border:none;
+  font-family:inherit;margin-bottom:16px;
+}
+.timeline-work-title{font-size:19px;font-weight:800;color:var(--shiro);letter-spacing:0.05em;line-height:1.3;margin-bottom:4px}
+.timeline-subtitle{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(250,247,242,0.5);letter-spacing:0.08em}
+
+.timeline-progress{
+  display:flex;gap:0;margin-top:20px;
+}
+.tp-step{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  position:relative;cursor:pointer;
+}
+.tp-step::before{
+  content:'';position:absolute;top:10px;left:50%;right:-50%;
+  height:1px;background:rgba(250,247,242,0.2);z-index:0;
+}
+.tp-step:last-child::before{display:none}
+.tp-dot{
+  width:20px;height:20px;border-radius:50%;
+  border:1.5px solid rgba(250,247,242,0.3);
+  background:transparent;z-index:1;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:rgba(250,247,242,0.4);
+  transition:all 0.3s;
+}
+.tp-step.done .tp-dot{background:var(--koke);border-color:var(--koke);color:var(--shiro)}
+.tp-step.active .tp-dot{background:var(--kincha);border-color:var(--kincha);color:var(--shiro);transform:scale(1.2)}
+.tp-label{font-size:8px;color:rgba(250,247,242,0.4);margin-top:4px;letter-spacing:0.05em;text-align:center;line-height:1.3}
+.tp-step.active .tp-label{color:var(--kincha)}
+.tp-step.done .tp-label{color:rgba(250,247,242,0.6)}
+
+/* TIMELINE CONTENT */
+.timeline-content{padding:24px}
+.timeline-stage{
+  display:none;animation:fadeIn 0.4s ease;
+}
+.timeline-stage.active{display:block}
+
+.stage-number{
+  font-family:'Cormorant Garamond',serif;
+  font-size:72px;font-style:italic;color:rgba(139,58,34,0.08);
+  line-height:1;margin-bottom:-20px;letter-spacing:-0.02em;
+}
+.stage-title{font-size:20px;font-weight:800;color:var(--sumi);letter-spacing:0.06em;margin-bottom:6px}
+.stage-title-en{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:var(--hai);letter-spacing:0.08em;margin-bottom:16px;display:block}
+.stage-image{
+  width:100%;height:200px;margin-bottom:16px;
+  position:relative;overflow:hidden;
+}
+.stage-image canvas{width:100%!important;height:100%!important}
+.stage-desc{font-size:14px;line-height:2;color:var(--sumi-mid);letter-spacing:0.04em;margin-bottom:20px}
+[dir="rtl"] .stage-desc{letter-spacing:0;line-height:2.2}
+
+.craftsman-note{
+  padding:16px 20px;background:var(--washi-dark);
+  border-left:3px solid var(--bengara);margin-bottom:20px;
+}
+[dir="rtl"] .craftsman-note{border-left:none;border-right:3px solid var(--bengara)}
+.cn-label{font-size:10px;letter-spacing:0.15em;color:var(--bengara);margin-bottom:8px}
+.cn-text{font-size:13px;line-height:1.9;color:var(--sumi-mid);font-style:italic}
+[dir="rtl"] .cn-text{letter-spacing:0}
+
+.stage-nav{display:flex;gap:12px;margin-top:8px}
+.stage-nav-btn{
+  flex:1;padding:14px;text-align:center;cursor:pointer;
+  font-family:inherit;font-size:13px;letter-spacing:0.1em;
+  border:1px solid var(--washi-dark);color:var(--hai);
+  background:var(--shiro);transition:all 0.2s;
+}
+.stage-nav-btn.primary{background:var(--sumi);color:var(--shiro);border-color:var(--sumi)}
+.stage-nav-btn:active{opacity:0.7}
+
+/* MYPAGE */
+.mypage-hero{padding:0 24px 24px;border-bottom:1px solid var(--washi-dark);margin-bottom:4px}
+.user-greeting{font-size:13px;color:var(--hai);letter-spacing:0.1em;margin-bottom:4px}
+.user-name{font-size:22px;font-weight:800;color:var(--sumi);letter-spacing:0.05em;margin-bottom:20px}
+.plan-card{background:var(--sumi);padding:20px;color:var(--shiro);position:relative;overflow:hidden}
+.plan-card::before{content:'精正堂';position:absolute;right:-10px;top:-10px;font-size:80px;font-weight:800;opacity:0.05;color:var(--shiro);letter-spacing:-0.05em}
+[dir="rtl"] .plan-card::before{right:auto;left:-10px}
+.plan-card-label{font-size:10px;letter-spacing:0.2em;color:var(--kincha);margin-bottom:8px}
+.plan-card-name{font-size:20px;font-weight:800;letter-spacing:0.1em;margin-bottom:16px}
+.plan-card-detail{display:flex;gap:24px}
+.pcd-label{font-size:10px;letter-spacing:0.12em;color:rgba(250,247,242,0.5);margin-bottom:3px}
+.pcd-value{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--shiro)}
+.current-rentals{padding:0 24px}
+.rental-item{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--washi-dark);cursor:pointer}
+.rental-thumb{width:72px;height:90px;flex-shrink:0;overflow:hidden;position:relative}
+.rental-thumb canvas{width:100%!important;height:100%!important}
+.rental-info{flex:1}
+.rental-status{font-size:10px;letter-spacing:0.15em;color:var(--koke);margin-bottom:5px}
+.rental-title{font-size:15px;font-weight:600;letter-spacing:0.05em;color:var(--sumi);line-height:1.4;margin-bottom:5px}
+.rental-meta{font-size:11px;color:var(--hai);letter-spacing:0.05em;line-height:1.6}
+.rental-buy-btn{margin-top:8px;display:inline-block;font-size:10px;letter-spacing:0.15em;padding:5px 12px;border:1px solid var(--bengara);color:var(--bengara);cursor:pointer}
+.plan-list{padding:0 24px}
+.plan-option{margin-bottom:12px;border:1px solid var(--washi-dark);padding:20px;cursor:pointer;transition:all 0.2s;position:relative}
+.plan-option.selected{border-color:var(--bengara);background:rgba(139,58,34,0.03)}
+.plan-option.selected::before{content:'✓';position:absolute;top:16px;right:16px;color:var(--bengara);font-size:14px}
+[dir="rtl"] .plan-option.selected::before{right:auto;left:16px}
+.plan-option-tier{font-size:10px;letter-spacing:0.2em;color:var(--kincha);margin-bottom:6px}
+.plan-option-name{font-size:18px;font-weight:800;letter-spacing:0.08em;color:var(--sumi);margin-bottom:4px}
+.plan-option-price{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--bengara);margin-bottom:10px}
+.plan-option-desc{font-size:12px;line-height:1.8;color:var(--hai)}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;background:var(--shiro);
+  border-top:1px solid var(--washi-dark);display:flex;z-index:200;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:12px 8px 10px;cursor:pointer;position:relative;transition:opacity 0.2s}
+.nav-item.active .nav-icon{color:var(--bengara)}
+.nav-item.active .nav-label{color:var(--bengara)}
+.nav-item.active::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--bengara)}
+.nav-icon{font-size:20px;color:var(--hai);margin-bottom:3px;line-height:1}
+.nav-label{font-size:10px;color:var(--hai);letter-spacing:0.12em}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:100px;left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--sumi);color:var(--shiro);
+  padding:12px 24px;font-size:13px;letter-spacing:0.1em;
+  opacity:0;transition:all 0.3s;z-index:500;
+  pointer-events:none;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ===== SCREEN: GALLERY HOME ===== -->
+<div class="screen active" id="screen-home">
+  <div class="app-header">
+    <div class="header-top">
+      <div>
+        <div class="logo-mark">IWASAKI</div>
+        <div class="logo-main">岩崎精正堂</div>
+        <div class="logo-en">Seiseidō — The Art of Restoration</div>
+      </div>
+      <div class="header-right">
+        <div class="lang-switcher">
+          <button class="lang-btn active" onclick="setLang('ja')">JP</button>
+          <button class="lang-btn" onclick="setLang('en')">EN</button>
+          <button class="lang-btn" onclick="setLang('zh')">中</button>
+          <button class="lang-btn" onclick="setLang('ar')">ع</button>
+        </div>
+        <div class="header-badge" data-i18n="badge_viewing">ご鑑賞中</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="plan-bar">
+    <div>
+      <div class="plan-label" data-i18n="current_plan">現在のプラン</div>
+      <div class="plan-name">雅 — MIYABI</div>
+    </div>
+    <div class="plan-cycle">¥15,000 / <span data-i18n="month">月</span></div>
+  </div>
+
+  <div class="section-title">
+    <h2 data-i18n="currently_viewing">現在ご鑑賞中の作品</h2>
+    <span class="section-more" onclick="showScreen('screen-mypage')" data-i18n="mypage">マイページ →</span>
+  </div>
+
+  <div class="current-work" onclick="showDetail(0)">
+    <div class="current-work-image">
+      <canvas id="c-featured" width="382" height="260"></canvas>
+      <div class="current-work-overlay">
+        <span class="work-tag" data-i18n="tag_featured">江戸後期 · 絹本着色</span>
+        <div class="work-title-large" data-i18n="work0_title">秋景山水図</div>
+        <div class="work-subtitle">Autumn Mountain Landscape</div>
+      </div>
+    </div>
+    <div class="current-work-info">
+      <div class="info-item"><div class="info-label" data-i18n="artist">作者</div><div class="info-value" data-i18n="work0_artist">伝・狩野典信</div></div>
+      <div class="info-item"><div class="info-label" data-i18n="restoration">修復</div><div class="info-value">岩崎精正堂</div></div>
+      <div class="info-item"><div class="info-label" data-i18n="return_date">返却予定</div><div class="info-value" data-i18n="return_val">5月15日</div></div>
+    </div>
+  </div>
+
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" type="text" data-i18n-placeholder="search_placeholder" placeholder="作品・作者・時代を探す">
+  </div>
+
+  <div class="filter-chips">
+    <div class="chip active" data-i18n="filter_all">すべて</div>
+    <div class="chip" data-i18n="filter_painting">絵画</div>
+    <div class="chip" data-i18n="filter_ink">水墨</div>
+    <div class="chip" data-i18n="filter_birds">花鳥図</div>
+    <div class="chip" data-i18n="filter_landscape">山水図</div>
+  </div>
+
+  <div class="section-title">
+    <h2 data-i18n="available_works">ご鑑賞いただける作品</h2>
+    <span class="section-more" data-i18n="view_all">全作品を見る →</span>
+  </div>
+
+  <div class="gallery-grid">
+    <div class="gallery-item" onclick="showDetail(1)">
+      <div class="gallery-item-image"><canvas id="c-g1" width="170" height="226"></canvas></div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title" data-i18n="work1_title">牡丹白鷺図</div>
+        <div class="gallery-item-meta" data-i18n="work1_meta">明治中期 · 絹本</div>
+        <div class="gallery-item-price"><span class="availability-dot"></span><span data-i18n="available">鑑賞可能</span></div>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="showDetail(2)">
+      <div class="gallery-item-image"><canvas id="c-g2" width="170" height="226"></canvas></div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title" data-i18n="work2_title">富士遠望図</div>
+        <div class="gallery-item-meta" data-i18n="work2_meta">江戸後期 · 紙本墨画</div>
+        <div class="gallery-item-price"><span class="availability-dot taken"></span><span data-i18n="rented">鑑賞中</span></div>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="showDetail(3)">
+      <div class="gallery-item-image"><canvas id="c-g3" width="170" height="226"></canvas></div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title" data-i18n="work3_title">四季花鳥屏風</div>
+        <div class="gallery-item-meta" data-i18n="work3_meta">桃山〜江戸初期</div>
+        <div class="gallery-item-price"><span class="availability-dot"></span><span data-i18n="available">鑑賞可能</span></div>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="showDetail(4)">
+      <div class="gallery-item-image"><canvas id="c-g4" width="170" height="226"></canvas></div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title" data-i18n="work4_title">竹林に鶴</div>
+        <div class="gallery-item-meta" data-i18n="work4_meta">江戸中期 · 紙本</div>
+        <div class="gallery-item-price"><span class="availability-dot"></span><span data-i18n="available">鑑賞可能</span></div>
+      </div>
+    </div>
+  </div>
+  <div style="height:24px"></div>
+</div>
+
+<!-- ===== SCREEN: DETAIL ===== -->
+<div class="screen" id="screen-detail">
+  <div class="detail-header">
+    <button class="back-btn" onclick="showScreen('screen-home')">← <span data-i18n="back_to_list">一覧に戻る</span></button>
+  </div>
+  <div class="detail-image-container">
+    <div class="detail-image"><canvas id="c-detail" width="382" height="320"></canvas></div>
+  </div>
+  <div class="detail-content">
+    <div class="detail-tag-row">
+      <span class="detail-tag accent" data-i18n="tag_restored">修復済</span>
+      <span class="detail-tag" data-i18n="tag_period">江戸後期</span>
+      <span class="detail-tag" data-i18n="tag_material">絹本着色</span>
+      <span class="detail-tag" data-i18n="tag_format">掛軸</span>
+    </div>
+    <h1 class="detail-title" data-i18n="work0_title">秋景山水図</h1>
+    <span class="detail-title-en">Autumn Mountain Landscape</span>
+    <div class="detail-meta-grid">
+      <div class="detail-meta-item"><div class="detail-meta-label" data-i18n="est_period">推定制作年</div><div class="detail-meta-value" data-i18n="work0_period">18世紀後半</div></div>
+      <div class="detail-meta-item"><div class="detail-meta-label" data-i18n="artist">作者</div><div class="detail-meta-value" data-i18n="work0_artist">伝・狩野典信</div></div>
+      <div class="detail-meta-item"><div class="detail-meta-label" data-i18n="material">素材</div><div class="detail-meta-value" data-i18n="work0_material">絹本着色</div></div>
+      <div class="detail-meta-item"><div class="detail-meta-label" data-i18n="dimensions">寸法</div><div class="detail-meta-value">112 × 43 cm</div></div>
+    </div>
+    <div class="detail-divider"></div>
+    <div class="story-section">
+      <div class="story-heading" data-i18n="about_work">作品のこと</div>
+      <p class="story-text" data-i18n="work0_story">
+        秋の山深くに、人里の灯りが静かに揺れている。霞む遠山、枯れかけた樹木、そして小舟を繋いだ渡し場——この掛軸には、江戸の人々が憧れた「閑寂の秋」がそのまま封じ込められています。<br><br>
+        伝・狩野典信の作とされるこの作品は、狩野派特有の骨太な筆致と、淡い金泥による霞の表現が見事な調和を見せています。
+      </p>
+    </div>
+    <div class="restoration-entry-btn" onclick="showTimeline()">
+      <div class="reb-left">
+        <div class="reb-label" data-i18n="restoration_record">◆ 修復の記録</div>
+        <div class="reb-title" data-i18n="restoration_btn_title">修復タイムラインを見る</div>
+      </div>
+      <div class="reb-arrow">→</div>
+    </div>
+    <div class="story-section">
+      <div class="story-heading" data-i18n="from_craftsman">表具師・岩崎正克より</div>
+      <p class="story-text" data-i18n="craftsman_message">
+        この作品と向き合った数週間、江戸の絵師が筆を置いた瞬間のことを何度も想像しました。修復とは、時間を繕うことではなく、作品が持つ本来の「声」を、現代に届ける仕事だと思っています。
+      </p>
+    </div>
+    <div style="height:80px"></div>
+  </div>
+  <div class="rent-action" onclick="showToast(T('added_to_next'))">
+    <div class="rent-left">
+      <div class="rent-plan-note" data-i18n="plan_note">雅プランでご鑑賞いただけます</div>
+      <div class="rent-cta" data-i18n="request_next">次回作品として申し込む</div>
+    </div>
+    <div class="rent-arrow">→</div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: RESTORATION TIMELINE ===== -->
+<div class="screen" id="screen-timeline">
+  <div class="timeline-header">
+    <button class="timeline-back" onclick="showScreen('screen-detail')">← <span data-i18n="back_to_detail">作品詳細に戻る</span></button>
+    <div class="timeline-work-title" data-i18n="work0_title">秋景山水図</div>
+    <div class="timeline-subtitle" data-i18n="restoration_process">Restoration Process — 岩崎精正堂</div>
+    <div class="timeline-progress" id="timeline-progress"></div>
+  </div>
+  <div class="timeline-content" id="timeline-content"></div>
+</div>
+
+<!-- ===== SCREEN: MY PAGE ===== -->
+<div class="screen" id="screen-mypage">
+  <div class="app-header">
+    <div class="header-top">
+      <div>
+        <div class="logo-mark">MY PAGE</div>
+        <div class="logo-main" data-i18n="mypage_title">マイページ</div>
+      </div>
+      <div class="header-right">
+        <div class="lang-switcher">
+          <button class="lang-btn active" onclick="setLang('ja')">JP</button>
+          <button class="lang-btn" onclick="setLang('en')">EN</button>
+          <button class="lang-btn" onclick="setLang('zh')">中</button>
+          <button class="lang-btn" onclick="setLang('ar')">ع</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mypage-hero">
+    <div class="user-greeting" data-i18n="welcome">ようこそ、</div>
+    <div class="user-name" data-i18n="username">山田 花子 様</div>
+    <div class="plan-card">
+      <div class="plan-card-label">CURRENT PLAN</div>
+      <div class="plan-card-name">雅 — MIYABI</div>
+      <div class="plan-card-detail">
+        <div class="pcd-item"><div class="pcd-label" data-i18n="monthly">月額</div><div class="pcd-value">¥15,000</div></div>
+        <div class="pcd-item"><div class="pcd-label" data-i18n="cycle">配送サイクル</div><div class="pcd-value" data-i18n="monthly_once">月1回</div></div>
+        <div class="pcd-item"><div class="pcd-label" data-i18n="history">ご利用歴</div><div class="pcd-value">8<span data-i18n="months">ヶ月</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="section-title"><h2 data-i18n="currently_viewing2">現在ご鑑賞中</h2></div>
+  <div class="current-rentals">
+    <div class="rental-item" onclick="showDetail(0)">
+      <div class="rental-thumb"><canvas id="c-my1" width="72" height="90"></canvas></div>
+      <div class="rental-info">
+        <div class="rental-status" data-i18n="viewing_status">● 鑑賞中</div>
+        <div class="rental-title" data-i18n="work0_title">秋景山水図</div>
+        <div class="rental-meta" data-i18n="rental_meta1">伝・狩野典信 / 江戸後期<br>返却予定：5月15日</div>
+        <span class="rental-buy-btn" onclick="event.stopPropagation();showToast(T('inquiry_sent'))" data-i18n="purchase_inquiry">購入について相談する</span>
+      </div>
+    </div>
+  </div>
+  <div class="section-title" style="margin-top:8px"><h2 data-i18n="viewing_history">鑑賞履歴</h2></div>
+  <div class="current-rentals">
+    <div class="rental-item">
+      <div class="rental-thumb"><canvas id="c-hist1" width="72" height="90"></canvas></div>
+      <div class="rental-info">
+        <div class="rental-status" style="color:var(--hai)" data-i18n="returned">返却済</div>
+        <div class="rental-title" data-i18n="work1_title">牡丹白鷺図</div>
+        <div class="rental-meta" data-i18n="hist_meta1">明治中期 / 絹本<br>鑑賞期間：2025年3月</div>
+      </div>
+    </div>
+    <div class="rental-item">
+      <div class="rental-thumb"><canvas id="c-hist2" width="72" height="90"></canvas></div>
+      <div class="rental-info">
+        <div class="rental-status" style="color:var(--hai)" data-i18n="returned">返却済</div>
+        <div class="rental-title" data-i18n="work4_title">竹林に鶴</div>
+        <div class="rental-meta" data-i18n="hist_meta2">江戸中期 / 紙本<br>鑑賞期間：2025年2月</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-title" style="margin-top:8px"><h2 data-i18n="change_plan">プランを変更する</h2></div>
+  <div class="plan-list">
+    <div class="plan-option" onclick="selectPlan(this,'暁')">
+      <div class="plan-option-tier">ENTRY</div>
+      <div class="plan-option-name">暁 — AKATSUKI</div>
+      <div class="plan-option-price">¥3,000 / <span data-i18n="month">月</span></div>
+      <div class="plan-option-desc" data-i18n="plan_akatsuki_desc">古美術との最初の出会いに。隔月でお届けします。</div>
+    </div>
+    <div class="plan-option selected" onclick="selectPlan(this,'雅')">
+      <div class="plan-option-tier">STANDARD</div>
+      <div class="plan-option-name">雅 — MIYABI</div>
+      <div class="plan-option-price">¥15,000 / <span data-i18n="month">月</span></div>
+      <div class="plan-option-desc" data-i18n="plan_miyabi_desc">日本画の本流を、毎月お手元へ。</div>
+    </div>
+    <div class="plan-option" onclick="selectPlan(this,'幽玄')">
+      <div class="plan-option-tier">PREMIUM</div>
+      <div class="plan-option-name">幽玄 — YUGEN</div>
+      <div class="plan-option-price">¥50,000 / <span data-i18n="month">月</span></div>
+      <div class="plan-option-desc" data-i18n="plan_yugen_desc">美術館級の作品を、生活空間に。</div>
+    </div>
+    <div class="plan-option" onclick="selectPlan(this,'至高')">
+      <div class="plan-option-tier">COLLECTOR</div>
+      <div class="plan-option-name">至高 — SHIKO</div>
+      <div class="plan-option-price">¥300,000〜 / <span data-i18n="month">月</span></div>
+      <div class="plan-option-desc" data-i18n="plan_shiko_desc">日本最高峰の古美術を、専任キュレーターと共に。</div>
+    </div>
+  </div>
+  <div style="height:24px"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="nav-item active" onclick="switchNav(this,'screen-home')" id="nav-home">
+    <div class="nav-icon">🖼</div>
+    <div class="nav-label" data-i18n="nav_gallery">ギャラリー</div>
+  </div>
+  <div class="nav-item" onclick="switchNav(this,'screen-detail')" id="nav-story">
+    <div class="nav-icon">📜</div>
+    <div class="nav-label" data-i18n="nav_detail">作品詳細</div>
+  </div>
+  <div class="nav-item" onclick="switchNav(this,'screen-mypage')" id="nav-my">
+    <div class="nav-icon">👤</div>
+    <div class="nav-label" data-i18n="nav_mypage">マイページ</div>
+  </div>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== i18n ====================
+const TRANSLATIONS = {
+  ja: {
+    badge_viewing:'ご鑑賞中', current_plan:'現在のプラン', month:'月',
+    currently_viewing:'現在ご鑑賞中の作品', mypage:'マイページ →',
+    tag_featured:'江戸後期 · 絹本着色',
+    work0_title:'秋景山水図', work0_artist:'伝・狩野典信', work0_period:'18世紀後半',
+    work0_material:'絹本着色', work0_story:'秋の山深くに、人里の灯りが静かに揺れている。霞む遠山、枯れかけた樹木、そして小舟を繋いだ渡し場——この掛軸には、江戸の人々が憧れた「閑寂の秋」がそのまま封じ込められています。<br><br>伝・狩野典信の作とされるこの作品は、狩野派特有の骨太な筆致と、淡い金泥による霞の表現が見事な調和を見せています。',
+    work1_title:'牡丹白鷺図', work1_meta:'明治中期 · 絹本',
+    work2_title:'富士遠望図', work2_meta:'江戸後期 · 紙本墨画',
+    work3_title:'四季花鳥屏風', work3_meta:'桃山〜江戸初期',
+    work4_title:'竹林に鶴', work4_meta:'江戸中期 · 紙本',
+    artist:'作者', restoration:'修復', return_date:'返却予定', return_val:'5月15日',
+    search_placeholder:'作品・作者・時代を探す',
+    filter_all:'すべて', filter_painting:'絵画', filter_ink:'水墨',
+    filter_birds:'花鳥図', filter_landscape:'山水図',
+    available_works:'ご鑑賞いただける作品', view_all:'全作品を見る →',
+    available:'鑑賞可能', rented:'鑑賞中',
+    back_to_list:'一覧に戻る',
+    tag_restored:'修復済', tag_period:'江戸後期', tag_material:'絹本着色', tag_format:'掛軸',
+    est_period:'推定制作年', material:'素材', dimensions:'寸法',
+    about_work:'作品のこと',
+    restoration_record:'◆ 修復の記録',
+    restoration_btn_title:'修復タイムラインを見る',
+    from_craftsman:'表具師・岩崎正克より',
+    craftsman_message:'この作品と向き合った数週間、江戸の絵師が筆を置いた瞬間のことを何度も想像しました。修復とは、時間を繕うことではなく、作品が持つ本来の「声」を、現代に届ける仕事だと思っています。',
+    plan_note:'雅プランでご鑑賞いただけます',
+    request_next:'次回作品として申し込む',
+    back_to_detail:'作品詳細に戻る',
+    restoration_process:'Restoration Process — 岩崎精正堂',
+    mypage_title:'マイページ', welcome:'ようこそ、', username:'山田 花子 様',
+    monthly:'月額', cycle:'配送サイクル', monthly_once:'月1回',
+    history:'ご利用歴', months:'ヶ月',
+    currently_viewing2:'現在ご鑑賞中',
+    viewing_status:'● 鑑賞中',
+    rental_meta1:'伝・狩野典信 / 江戸後期<br>返却予定：5月15日',
+    purchase_inquiry:'購入について相談する',
+    viewing_history:'鑑賞履歴', returned:'返却済',
+    hist_meta1:'明治中期 / 絹本<br>鑑賞期間：2025年3月',
+    hist_meta2:'江戸中期 / 紙本<br>鑑賞期間：2025年2月',
+    change_plan:'プランを変更する',
+    plan_akatsuki_desc:'古美術との最初の出会いに。隔月でお届けします。',
+    plan_miyabi_desc:'日本画の本流を、毎月お手元へ。',
+    plan_yugen_desc:'美術館級の作品を、生活空間に。',
+    plan_shiko_desc:'日本最高峰の古美術を、専任キュレーターと共に。',
+    nav_gallery:'ギャラリー', nav_detail:'作品詳細', nav_mypage:'マイページ',
+    added_to_next:'次回配送に追加しました', inquiry_sent:'購入のご相談を受け付けました',
+    plan_selected:'プランを選択しました',
+    stage_prev:'← 前へ', stage_next:'次へ →', stage_done:'完成 ✓',
+    stages:[
+      {num:'01', title:'受付・査定', en:'Reception & Assessment',
+        desc:'所有者より作品を受け取り、損傷状態を詳細に記録します。経年劣化の範囲、絹・紙の破損箇所、彩色の剥落状態を光学的に確認し、修復方針を立案します。',
+        note:'「この作品を初めて手にしたとき、絹の破れよりも、色彩の奥に残る絵師の気迫に心を打たれました。」'},
+      {num:'02', title:'解体・裏打除去', en:'Dismantling',
+        desc:'古い裏打ち紙を慎重に除去します。無理な力を加えず、湿度と時間を使って少しずつ剥離させる、最も繊細な工程のひとつです。',
+        note:'「裏打ちを剥がすとき、過去の修復師が残した痕跡に出会います。先人の仕事を尊重しながら、次の世代に繋ぐことを意識します。」'},
+      {num:'03', title:'洗浄・補填', en:'Cleaning & Repair',
+        desc:'水洗いによる汚れの除去と、破損部分への和紙補填を行います。補填紙は本紙の色合いと厚みに合わせて選定し、目立たないよう丁寧に馴染ませます。',
+        note:'「和紙の選定だけで半日かかることもあります。色、厚み、繊維の方向——すべてが揃って初めて作品に馴染む。」'},
+      {num:'04', title:'彩色の固着', en:'Color Consolidation',
+        desc:'剥落しかけた顔料を膠水で固着します。過度な処置は絵の雰囲気を変えてしまうため、必要最小限の介入にとどめることが重要です。',
+        note:'「修復師の手が「見えない」ことが、最高の仕事の証明です。作品だけが輝く状態を目指します。」'},
+      {num:'05', title:'新裏打ち・表装', en:'Re-mounting',
+        desc:'新しい和紙で裏打ちを施し、掛軸として再表装します。軸木・風帯・表紙の布地も作品の時代感に合わせて選定。全体の調和を整えます。',
+        note:'「表装は絵に着物を着せるようなもの。絵の魂を包む器を作る仕事です。」'},
+      {num:'06', title:'完成・記録', en:'Completion',
+        desc:'修復完了。全工程の記録写真と修復報告書を作成します。この記録は作品とともに次世代に受け継がれ、未来の修復師への手掛かりとなります。',
+        note:'「仕事が終わったとき、作品に「お待たせしました」と声をかけることがあります。それくらい、作品と対話しながら仕事をしています。」'},
+    ]
+  },
+  en: {
+    badge_viewing:'Viewing', current_plan:'Current Plan', month:'mo',
+    currently_viewing:'Currently Viewing', mypage:'My Page →',
+    tag_featured:'Late Edo · Silk Painting',
+    work0_title:'Autumn Mountain Landscape', work0_artist:'Attr. Kanō Minenobu', work0_period:'Late 18th century',
+    work0_material:'Color on Silk', work0_story:'In the depths of autumn mountains, the distant lights of a hamlet flicker quietly. Hazy peaks, withered trees, a moored boat at a river crossing — this hanging scroll captures the "tranquil autumn" that Edo people so deeply cherished.<br><br>Attributed to Kanō Minenobu, this work displays the bold brushwork characteristic of the Kanō school, harmoniously balanced with delicate gold-pigment mist.',
+    work1_title:'Peony & Egret', work1_meta:'Mid-Meiji · Silk',
+    work2_title:'Distant View of Mt. Fuji', work2_meta:'Late Edo · Ink on Paper',
+    work3_title:'Birds & Flowers of Four Seasons', work3_meta:'Momoyama – Early Edo',
+    work4_title:'Cranes in Bamboo Grove', work4_meta:'Mid-Edo · Paper',
+    artist:'Artist', restoration:'Restored by', return_date:'Return by', return_val:'May 15',
+    search_placeholder:'Search by title, artist, or era',
+    filter_all:'All', filter_painting:'Paintings', filter_ink:'Ink',
+    filter_birds:'Birds & Flowers', filter_landscape:'Landscape',
+    available_works:'Available Works', view_all:'View All →',
+    available:'Available', rented:'On Loan',
+    back_to_list:'Back to Gallery',
+    tag_restored:'Restored', tag_period:'Late Edo', tag_material:'Color on Silk', tag_format:'Hanging Scroll',
+    est_period:'Est. Period', material:'Medium', dimensions:'Dimensions',
+    about_work:'About this Work',
+    restoration_record:'◆ Restoration Record',
+    restoration_btn_title:'View Restoration Timeline',
+    from_craftsman:'From Craftsman Iwasaki Masakatsu',
+    craftsman_message:'During the weeks I spent with this work, I repeatedly imagined the moment the Edo artist put down his brush. Restoration is not about mending time — it is about delivering the original "voice" of a work to the present.',
+    plan_note:'Available with MIYABI Plan',
+    request_next:'Request for Next Delivery',
+    back_to_detail:'Back to Artwork',
+    restoration_process:'Restoration Process — Iwasaki Seiseidō',
+    mypage_title:'My Page', welcome:'Welcome,', username:'Hanako Yamada',
+    monthly:'Monthly', cycle:'Delivery Cycle', monthly_once:'Once / month',
+    history:'Member Since', months:' months',
+    currently_viewing2:'Currently Viewing',
+    viewing_status:'● On Loan',
+    rental_meta1:'Attr. Kanō Minenobu / Late Edo<br>Return by: May 15',
+    purchase_inquiry:'Inquire about Purchase',
+    viewing_history:'Viewing History', returned:'Returned',
+    hist_meta1:'Mid-Meiji / Silk<br>Viewed: March 2025',
+    hist_meta2:'Mid-Edo / Paper<br>Viewed: February 2025',
+    change_plan:'Change Plan',
+    plan_akatsuki_desc:'Your first encounter with antique art. Delivered every other month.',
+    plan_miyabi_desc:'The finest Japanese paintings, delivered monthly.',
+    plan_yugen_desc:'Museum-grade works for your living space.',
+    plan_shiko_desc:'Japan\'s finest antiques, with a dedicated curator.',
+    nav_gallery:'Gallery', nav_detail:'Artwork', nav_mypage:'My Page',
+    added_to_next:'Added to next delivery', inquiry_sent:'Purchase inquiry received',
+    plan_selected:'Plan selected',
+    stage_prev:'← Prev', stage_next:'Next →', stage_done:'Complete ✓',
+    stages:[
+      {num:'01', title:'Reception & Assessment', en:'Initial Inspection',
+        desc:'The work is received and its condition meticulously documented. The extent of age-related deterioration, tears in the silk or paper, and pigment flaking are examined optically to establish a restoration plan.',
+        note:'"When I first held this work, what struck me more than the torn silk was the intensity of the artist\'s spirit preserved in the colors."'},
+      {num:'02', title:'Dismantling', en:'Removing Old Backing',
+        desc:'The aged backing paper is carefully removed — never by force, but using moisture and time to gradually separate it. This is one of the most delicate stages of the entire process.',
+        note:'"Removing the old backing, I sometimes encounter traces left by past restorers. I work with respect for their craft, while thinking of the generations to come."'},
+      {num:'03', title:'Cleaning & Repair', en:'Washing & Infilling',
+        desc:'The work is gently washed to remove surface dirt, and damaged areas are infilled with washi paper matched to the original in color and weight. Each patch is carefully blended to become invisible.',
+        note:'"Selecting the right washi can take half a day. Color, weight, fiber direction — only when all align does the patch truly disappear into the work."'},
+      {num:'04', title:'Color Consolidation', en:'Pigment Fixation',
+        desc:'Lifting pigments are consolidated with diluted nikawa (animal glue). The key is restraint — excessive intervention changes the atmosphere of the work. Only the minimum necessary treatment is applied.',
+        note:'"The best restoration work is invisible. When only the artwork shines, the restorer has done their job."'},
+      {num:'05', title:'Re-mounting', en:'New Backing & Mounting',
+        desc:'New washi is applied as backing, and the work is re-mounted as a hanging scroll. The roller, wind-belt, and facing fabric are all selected to harmonize with the work\'s era and character.',
+        note:'"Mounting is like dressing a painting. We create a vessel worthy of the soul within."'},
+      {num:'06', title:'Completion', en:'Documentation & Handover',
+        desc:'Restoration complete. Full photographic documentation and a restoration report are created. This record is preserved alongside the work, serving as a guide for future restorers.',
+        note:'"When the work is finished, I sometimes say quietly: \'I\'m sorry to have kept you waiting.\' That\'s how deeply I converse with each piece."'},
+    ]
+  },
+  zh: {
+    badge_viewing:'鉴赏中', current_plan:'当前套餐', month:'月',
+    currently_viewing:'当前鉴赏中的作品', mypage:'我的页面 →',
+    tag_featured:'江户后期 · 绢本着色',
+    work0_title:'秋景山水图', work0_artist:'传·狩野典信', work0_period:'18世纪后半期',
+    work0_material:'绢本着色', work0_story:'秋山深处，远处村落的灯火静静摇曳。朦胧的远山、枯萎的树木、系着小舟的渡口——这幅挂轴封存了江户人所向往的「幽静之秋」。<br><br>此作传为狩野典信所绘，展现了狩野派特有的刚劲笔触与淡金泥霞气之间的绝妙和谐。',
+    work1_title:'牡丹白鹭图', work1_meta:'明治中期 · 绢本',
+    work2_title:'富士远望图', work2_meta:'江户后期 · 纸本墨画',
+    work3_title:'四季花鸟屏风', work3_meta:'桃山～江户初期',
+    work4_title:'竹林仙鹤', work4_meta:'江户中期 · 纸本',
+    artist:'作者', restoration:'修复', return_date:'归还日期', return_val:'5月15日',
+    search_placeholder:'搜索作品、作者或年代',
+    filter_all:'全部', filter_painting:'绘画', filter_ink:'水墨',
+    filter_birds:'花鸟图', filter_landscape:'山水图',
+    available_works:'可鉴赏的作品', view_all:'查看全部 →',
+    available:'可鉴赏', rented:'鉴赏中',
+    back_to_list:'返回列表',
+    tag_restored:'已修复', tag_period:'江户后期', tag_material:'绢本着色', tag_format:'挂轴',
+    est_period:'推定创作年', material:'材质', dimensions:'尺寸',
+    about_work:'关于作品',
+    restoration_record:'◆ 修复记录',
+    restoration_btn_title:'查看修复时间线',
+    from_craftsman:'装裱师岩崎正克寄语',
+    craftsman_message:'在与这幅作品相处的数周里，我无数次想象着江户画师放下笔的那一刻。修复不是修补时间，而是将作品本来的「声音」传递到当代的工作。',
+    plan_note:'雅套餐可鉴赏此作品',
+    request_next:'申请为下次配送作品',
+    back_to_detail:'返回作品详情',
+    restoration_process:'修复过程 — 岩崎精正堂',
+    mypage_title:'我的页面', welcome:'欢迎，', username:'山田花子 女士',
+    monthly:'月费', cycle:'配送周期', monthly_once:'每月一次',
+    history:'使用时长', months:'个月',
+    currently_viewing2:'当前鉴赏中',
+    viewing_status:'● 鉴赏中',
+    rental_meta1:'传·狩野典信 / 江户后期<br>归还日期：5月15日',
+    purchase_inquiry:'咨询购买事宜',
+    viewing_history:'鉴赏历史', returned:'已归还',
+    hist_meta1:'明治中期 / 绢本<br>鉴赏期间：2025年3月',
+    hist_meta2:'江户中期 / 纸本<br>鉴赏期间：2025年2月',
+    change_plan:'更改套餐',
+    plan_akatsuki_desc:'与古美术的初次相遇。每两个月配送一次。',
+    plan_miyabi_desc:'日本画的主流佳作，每月送达您手中。',
+    plan_yugen_desc:'博物馆级别的作品，融入您的生活空间。',
+    plan_shiko_desc:'日本最顶级的古美术，由专属策展人陪同。',
+    nav_gallery:'画廊', nav_detail:'作品详情', nav_mypage:'我的页面',
+    added_to_next:'已加入下次配送', inquiry_sent:'已收到您的购买咨询',
+    plan_selected:'已选择套餐',
+    stage_prev:'← 上一步', stage_next:'下一步 →', stage_done:'完成 ✓',
+    stages:[
+      {num:'01', title:'受理·鉴定', en:'Reception & Assessment',
+        desc:'接收作品，详细记录损伤状态。通过光学手段确认老化范围、绢纸破损位置及颜料脱落状况，制定修复方案。',
+        note:'"初次拿到这件作品时，比起绢布的破裂，更令我震撼的是色彩深处残留的画师气魄。"'},
+      {num:'02', title:'解体·揭背', en:'Dismantling',
+        desc:'小心去除旧背纸。不使用蛮力，借助湿度与时间缓慢分离，是整个修复过程中最精细的工序之一。',
+        note:'"揭除背纸时，有时会遇到前代修复师留下的痕迹。我在尊重先人工作的同时，思考着如何传承给下一代。"'},
+      {num:'03', title:'清洗·补缺', en:'Cleaning & Repair',
+        desc:'水洗去除污渍，并用与原纸颜色和厚度相匹配的和纸修补破损部位，细心处理使补缺处融为一体。',
+        note:'"光是选纸就可能花上半天。颜色、厚度、纤维方向——三者俱全，才能真正与作品融为一体。"'},
+      {num:'04', title:'颜料固着', en:'Color Consolidation',
+        desc:'用稀释的动物胶水固着即将脱落的颜料。关键在于节制——过多干预会改变作品的意境，因此只施以最低限度的处理。',
+        note:'"修复师的手「看不见」才是最高水准的证明。目标是让作品本身发光。"'},
+      {num:'05', title:'重新装裱', en:'Re-mounting',
+        desc:'施以新背纸，重新装裱为挂轴。轴木、风带、表纸布料均根据作品的时代感精心选配，整体协调统一。',
+        note:'"装裱就像给画穿上和服。我们制作的是包裹画魂的容器。"'},
+      {num:'06', title:'完成·记录', en:'Completion',
+        desc:'修复完成。制作全工序的记录照片及修复报告书，这份记录将与作品一同传承，成为未来修复师的参考。',
+        note:'"工作结束时，有时会对作品说：「让您久等了。」我就是这样，与每件作品进行着对话。"'},
+    ]
+  },
+  ar: {
+    badge_viewing:'جارٍ التأمل', current_plan:'الخطة الحالية', month:'شهر',
+    currently_viewing:'العمل الفني قيد التأمل', mypage:'صفحتي ←',
+    tag_featured:'أواخر إيدو · ألوان على حرير',
+    work0_title:'منظر جبلي خريفي', work0_artist:'يُنسب إلى كانو مينينوبو', work0_period:'أواخر القرن الثامن عشر',
+    work0_material:'ألوان على حرير', work0_story:'في أعماق الجبال الخريفية، ترتجف أضواء القرية البعيدة بهدوء. جبال ضبابية، أشجار ذابلة، ومعبر نهري يربط زورقاً صغيراً — تحمل هذه اللفافة المعلقة «خريف الصمت الهادئ» الذي اشتاق إليه أهل إيدو.<br><br>يُنسب هذا العمل إلى كانو مينينوبو، ويُظهر ضربات الفرشاة القوية الخاصة بمدرسة كانو في تناسق رائع مع الضباب المرسوم بطلاء الذهب الخفيف.',
+    work1_title:'الفاوانيا والمالك الحزين', work1_meta:'وسط ميجي · حرير',
+    work2_title:'منظر بعيد لجبل فوجي', work2_meta:'أواخر إيدو · حبر على ورق',
+    work3_title:'طيور وأزهار الفصول الأربعة', work3_meta:'موموياما – أوائل إيدو',
+    work4_title:'طيور الرافعة في غابة الخيزران', work4_meta:'وسط إيدو · ورق',
+    artist:'الفنان', restoration:'تمت ترميمه بواسطة', return_date:'موعد الإعادة', return_val:'15 مايو',
+    search_placeholder:'ابحث بالعنوان أو الفنان أو الحقبة',
+    filter_all:'الكل', filter_painting:'لوحات', filter_ink:'حبر',
+    filter_birds:'طيور وأزهار', filter_landscape:'مناظر طبيعية',
+    available_works:'الأعمال المتاحة للتأمل', view_all:'← عرض الكل',
+    available:'متاح', rented:'معار',
+    back_to_list:'← العودة إلى القائمة',
+    tag_restored:'مُرمَّم', tag_period:'أواخر إيدو', tag_material:'ألوان على حرير', tag_format:'لفافة معلقة',
+    est_period:'الحقبة التقريبية', material:'الخامة', dimensions:'الأبعاد',
+    about_work:'عن هذا العمل',
+    restoration_record:'◆ سجل الترميم',
+    restoration_btn_title:'عرض الجدول الزمني للترميم',
+    from_craftsman:'من الحرفي إيواساكي ماساكاتسو',
+    craftsman_message:'خلال الأسابيع التي قضيتها مع هذا العمل، تخيلت مراراً اللحظة التي وضع فيها فنان إيدو فرشاته. الترميم ليس إصلاح الزمن، بل إيصال «الصوت» الأصيل للعمل إلى الحاضر.',
+    plan_note:'متاح مع خطة ميابي',
+    request_next:'طلب كعمل التسليم التالي',
+    back_to_detail:'← العودة إلى العمل',
+    restoration_process:'عملية الترميم — إيواساكي سيسيدو',
+    mypage_title:'صفحتي', welcome:'مرحباً،', username:'هاناكو ياماداسان',
+    monthly:'الرسوم الشهرية', cycle:'دورة التسليم', monthly_once:'مرة / شهر',
+    history:'تاريخ العضوية', months:' أشهر',
+    currently_viewing2:'جارٍ التأمل حالياً',
+    viewing_status:'● معار',
+    rental_meta1:'يُنسب إلى كانو / أواخر إيدو<br>الإعادة: 15 مايو',
+    purchase_inquiry:'الاستفسار عن الشراء',
+    viewing_history:'سجل التأمل', returned:'مُعاد',
+    hist_meta1:'وسط ميجي / حرير<br>تمت المشاهدة: مارس 2025',
+    hist_meta2:'وسط إيدو / ورق<br>تمت المشاهدة: فبراير 2025',
+    change_plan:'تغيير الخطة',
+    plan_akatsuki_desc:'أولى لقاءاتك بالفنون الأصيلة. يُسلَّم كل شهرين.',
+    plan_miyabi_desc:'روائع الرسم الياباني، تصلك كل شهر.',
+    plan_yugen_desc:'أعمال بمستوى المتاحف لمساحتك المعيشية.',
+    plan_shiko_desc:'أرقى الفنون اليابانية الأصيلة، برفقة منسق مخصص.',
+    nav_gallery:'المعرض', nav_detail:'تفاصيل العمل', nav_mypage:'صفحتي',
+    added_to_next:'تمت الإضافة إلى التسليم التالي', inquiry_sent:'تم استلام استفساركم',
+    plan_selected:'تم اختيار الخطة',
+    stage_prev:'السابق ←', stage_next:'التالي →', stage_done:'مكتمل ✓',
+    stages:[
+      {num:'01', title:'الاستقبال والتقييم', en:'Reception & Assessment',
+        desc:'يُستلم العمل ويُوثَّق بدقة كل ضرر. يُفحص نطاق التلف الزمني، وتمزقات الحرير والورق، وتقشر الطلاء بالوسائل البصرية لوضع خطة الترميم.',
+        note:'"حين أمسكت بهذا العمل للمرة الأولى، ما أدهشني لم يكن تمزق الحرير، بل روح الفنان المحفوظة في عمق الألوان."'},
+      {num:'02', title:'التفكيك وإزالة التبطين', en:'Dismantling',
+        desc:'يُزال الورق المبطِّن القديم بعناية فائقة — لا بالقوة، بل باستخدام الرطوبة والوقت للفصل التدريجي. هذه المرحلة من أكثر مراحل العملية دقةً.',
+        note:'"عند إزالة التبطين القديم، أجد أحياناً آثاراً تركها مرمِّمون سابقون. أعمل باحترام لصنيعهم، وأنا أفكر في الأجيال القادمة."'},
+      {num:'03', title:'التنظيف والترقيع', en:'Cleaning & Repair',
+        desc:'يُغسل العمل بلطف لإزالة الأتربة، وتُرمَّم المناطق التالفة بورق واشي مطابق للأصل في اللون والسماكة، مع حرص على الاندماج الكامل.',
+        note:'"اختيار الورق المناسب وحده قد يستغرق نصف يوم. اللون والسُّمك واتجاه الألياف — لا بد أن يتوافق الثلاثة لتختفي الرقعة في العمل."'},
+      {num:'04', title:'تثبيت الألوان', en:'Color Consolidation',
+        desc:'يُثبَّت الطلاء المتقشر بغراء حيواني مخفف. المبدأ هو الاعتدال — أي تدخل زائد يُغيِّر روح العمل، لذا يُطبَّق الحد الأدنى من المعالجة.',
+        note:'"أفضل ما يقدمه المرمِّم هو أن تبقى يده غير مرئية. حين يتألق العمل وحده، تكون المهمة قد أُنجزت."'},
+      {num:'05', title:'إعادة التبطين والتعليق', en:'Re-mounting',
+        desc:'يُطبَّق تبطين جديد من الواشي، ويُعلَّق العمل من جديد. يُختار عمود اللفافة والشرائط وقماش الغطاء بما يتناسب مع حقبة العمل وشخصيته.',
+        note:'"تعليق اللوحة كأنك تلبسها ثوباً. نصنع الوعاء الذي يحتضن روح العمل."'},
+      {num:'06', title:'الإتمام والتوثيق', en:'Completion',
+        desc:'اكتمل الترميم. تُنشأ وثيقة تصويرية كاملة وتقرير الترميم الذي يُحفظ مع العمل، ليكون مرجعاً للمرمِّمين في المستقبل.',
+        note:'"حين أنتهي من عمل، أجد نفسي أهمس أحياناً: لقد طال انتظارك. هكذا أتحدث مع كل عمل أتعامل معه."'},
+    ]
+  }
+};
+
+let currentLang = 'ja';
+let currentStage = 0;
+
+function T(key) {
+  return TRANSLATIONS[currentLang][key] || TRANSLATIONS['ja'][key] || key;
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  const body = document.body;
+  body.setAttribute('lang', lang);
+  body.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  document.documentElement.setAttribute('lang', lang);
+
+  // Update all lang buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.remove('active');
+    const map = {ja:'JP',en:'EN',zh:'中',ar:'ع'};
+    if (btn.textContent === map[lang]) btn.classList.add('active');
+  });
+
+  // Update all i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = T(key);
+    el.innerHTML = val;
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    el.placeholder = T(key);
+  });
+
+  // Re-render timeline if active
+  if (document.getElementById('screen-timeline').classList.contains('active')) {
+    renderTimeline(currentStage);
+  }
+}
+
+// ==================== TIMELINE ====================
+function showTimeline() {
+  currentStage = 0;
+  showScreen('screen-timeline');
+  renderTimeline(0);
+}
+
+function renderTimeline(stageIdx) {
+  const stages = TRANSLATIONS[currentLang].stages;
+  currentStage = stageIdx;
+
+  // Progress bar
+  const prog = document.getElementById('timeline-progress');
+  prog.innerHTML = stages.map((s, i) => `
+    <div class="tp-step ${i < stageIdx ? 'done' : i === stageIdx ? 'active' : ''}" onclick="renderTimeline(${i})">
+      <div class="tp-dot">${i < stageIdx ? '✓' : s.num}</div>
+      <div class="tp-label">${s.title.split('·')[0].split('·')[0].substring(0,6)}</div>
+    </div>
+  `).join('');
+
+  // Content
+  const s = stages[stageIdx];
+  const isLast = stageIdx === stages.length - 1;
+  const isFirst = stageIdx === 0;
+
+  const content = document.getElementById('timeline-content');
+  content.innerHTML = `
+    <div class="timeline-stage active">
+      <div class="stage-number">${s.num}</div>
+      <div class="stage-title">${s.title}</div>
+      <span class="stage-title-en">${s.en}</span>
+      <div class="stage-image"><canvas id="c-stage" width="382" height="200"></canvas></div>
+      <p class="stage-desc">${s.desc}</p>
+      <div class="craftsman-note">
+        <div class="cn-label">${currentLang === 'ar' ? '◆ من الحرفي' : currentLang === 'zh' ? '◆ 工匠寄语' : currentLang === 'en' ? '◆ Craftsman\'s Note' : '◆ 職人の言葉'}</div>
+        <p class="cn-text">${s.note}</p>
+      </div>
+      <div class="stage-nav">
+        ${!isFirst ? `<button class="stage-nav-btn" onclick="renderTimeline(${stageIdx-1})">${T('stage_prev')}</button>` : '<div></div>'}
+        <button class="stage-nav-btn primary" onclick="${isLast ? "showScreen('screen-detail')" : `renderTimeline(${stageIdx+1})`}">
+          ${isLast ? T('stage_done') : T('stage_next')}
+        </button>
+      </div>
+    </div>
+  `;
+
+  // Draw stage illustration
+  setTimeout(() => drawStageIllustration('c-stage', stageIdx), 50);
+}
+
+function drawStageIllustration(canvasId, stage) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const rng = mulberry32(stage * 37 + 7);
+
+  // Washi bg
+  ctx.fillStyle = '#EAE3D5';
+  ctx.fillRect(0, 0, w, h);
+
+  // Grain
+  for (let i = 0; i < 3000; i++) {
+    ctx.fillStyle = `rgba(${120+rng()*60|0},${100+rng()*40|0},${70+rng()*30|0},0.03)`;
+    ctx.fillRect(rng()*w, rng()*h, 1+rng()*2, 1);
+  }
+
+  const stageColors = [
+    ['#8B3A22','#5E6B52','#A8873A'],
+    ['#5E6B52','#3D3028','#8B3A22'],
+    ['#A8873A','#8B3A22','#5E6B52'],
+    ['#3D3028','#A8873A','#5E6B52'],
+    ['#5E6B52','#A8873A','#3D3028'],
+    ['#A8873A','#5E6B52','#8B3A22'],
+  ];
+  const c = stageColors[stage];
+
+  if (stage === 0) {
+    // Assessment: artwork on table with tools
+    // Scroll outline
+    ctx.strokeStyle = `rgba(${hexToRgb(c[0])},0.6)`;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(w*0.15, h*0.1, w*0.45, h*0.75);
+    drawArtworkMiniature(ctx, w*0.15, h*0.1, w*0.45, h*0.75, rng);
+    // Magnifying glass
+    ctx.strokeStyle = `rgba(${hexToRgb(c[1])},0.8)`;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(w*0.72, h*0.3, 28, 0, Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w*0.72+20, h*0.3+20); ctx.lineTo(w*0.85, h*0.55); ctx.stroke();
+    // Notes
+    for (let i = 0; i < 5; i++) {
+      ctx.fillStyle = `rgba(${hexToRgb(c[2])},0.3)`;
+      ctx.fillRect(w*0.67, h*(0.6+i*0.07), w*0.22, 2);
+    }
+  } else if (stage === 1) {
+    // Dismantling: layers peeling
+    for (let layer = 4; layer >= 0; layer--) {
+      const offset = layer * 6;
+      ctx.fillStyle = `rgba(${hexToRgb(layer%2===0?c[0]:c[1])},${0.12+layer*0.06})`;
+      ctx.fillRect(w*0.1+offset, h*0.1+offset, w*0.75, h*0.75);
+    }
+    // Peeling edge
+    ctx.beginPath();
+    ctx.moveTo(w*0.1, h*0.4);
+    ctx.quadraticCurveTo(w*0.05, h*0.3, w*0.15, h*0.2);
+    ctx.strokeStyle = `rgba(${hexToRgb(c[0])},0.7)`;
+    ctx.lineWidth = 2; ctx.stroke();
+    // Tweezers
+    ctx.strokeStyle = `rgba(${hexToRgb(c[2])},0.8)`;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(w*0.75, h*0.15); ctx.lineTo(w*0.62, h*0.38); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w*0.78, h*0.15); ctx.lineTo(w*0.65, h*0.38); ctx.stroke();
+  } else if (stage === 2) {
+    // Cleaning: water drops, brushwork
+    drawArtworkMiniature(ctx, w*0.1, h*0.1, w*0.55, h*0.8, rng);
+    for (let i = 0; i < 15; i++) {
+      const x = w*(0.2+rng()*0.4), y = h*(0.15+rng()*0.7);
+      ctx.beginPath();
+      ctx.ellipse(x, y, 4+rng()*6, 3+rng()*4, rng()*Math.PI, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(100,140,180,0.2)`;
+      ctx.fill();
+    }
+    // Brush
+    ctx.strokeStyle = `rgba(${hexToRgb(c[2])},0.7)`;
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(w*0.8, h*0.1); ctx.lineTo(w*0.72, h*0.45); ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(w*0.72, h*0.48, 6, 14, 0, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${hexToRgb(c[0])},0.6)`;
+    ctx.fill();
+  } else if (stage === 3) {
+    // Color fixing: detail of pigment areas
+    drawArtworkMiniature(ctx, w*0.05, h*0.05, w*0.9, h*0.7, rng);
+    // Drip/consolidation marks
+    for (let i = 0; i < 8; i++) {
+      const x = w*(0.15+rng()*0.7), y = h*(0.1+rng()*0.55);
+      ctx.beginPath(); ctx.arc(x, y, 3+rng()*5, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${hexToRgb(c[2])},0.35)`;
+      ctx.fill();
+    }
+    // Brush detail
+    ctx.strokeStyle = `rgba(${hexToRgb(c[0])},0.8)`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(w*0.88, h*0.78); ctx.lineTo(w*0.75, h*0.85); ctx.stroke();
+  } else if (stage === 4) {
+    // Mounting: layered washi rolls
+    for (let i = 0; i < 5; i++) {
+      ctx.fillStyle = `rgba(${hexToRgb(i%2===0?c[0]:c[1])},${0.15+i*0.05})`;
+      ctx.fillRect(w*0.08, h*(0.08+i*0.08), w*0.84, h*0.7);
+    }
+    // Roller at bottom
+    ctx.fillStyle = `rgba(${hexToRgb(c[2])},0.7)`;
+    ctx.beginPath();
+    ctx.ellipse(w/2, h*0.85, w*0.42, 10, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(w*0.08, h*0.85, 8, 10, 0, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${hexToRgb(c[0])},0.7)`;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(w*0.92, h*0.85, 8, 10, 0, 0, Math.PI*2);
+    ctx.fill();
+  } else {
+    // Completion: beautiful final artwork
+    drawArtworkMiniature(ctx, w*0.08, h*0.05, w*0.56, h*0.9, rng);
+    // Certificate/document
+    ctx.fillStyle = 'rgba(250,247,242,0.9)';
+    ctx.fillRect(w*0.67, h*0.1, w*0.27, h*0.6);
+    ctx.strokeStyle = `rgba(${hexToRgb(c[0])},0.4)`;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(w*0.67, h*0.1, w*0.27, h*0.6);
+    for (let i = 0; i < 7; i++) {
+      ctx.fillStyle = `rgba(${hexToRgb(c[1])},0.25)`;
+      ctx.fillRect(w*0.69, h*(0.18+i*0.07), w*0.23, 1.5);
+    }
+    // Seal
+    ctx.fillStyle = `rgba(${hexToRgb(c[0])},0.8)`;
+    ctx.fillRect(w*0.78, h*0.58, 22, 22);
+    ctx.fillStyle = 'rgba(250,247,242,0.9)';
+    ctx.font = `bold 7px 'Shippori Mincho B1'`;
+    ctx.textAlign = 'center';
+    ctx.fillText('精', w*0.78+11, h*0.58+10);
+    ctx.fillText('正', w*0.78+11, h*0.58+19);
+  }
+
+  // Vignette
+  const vig = ctx.createRadialGradient(w/2,h/2,h*0.2,w/2,h/2,h*0.7);
+  vig.addColorStop(0,'transparent');
+  vig.addColorStop(1,'rgba(40,28,20,0.15)');
+  ctx.fillStyle = vig; ctx.fillRect(0,0,w,h);
+}
+
+function drawArtworkMiniature(ctx, x, y, w, h, rng) {
+  ctx.fillStyle = 'rgba(200,185,160,0.4)';
+  ctx.fillRect(x, y, w, h);
+  ctx.strokeStyle = 'rgba(60,40,20,0.3)';
+  ctx.lineWidth = 1;
+  // Mountain lines
+  for (let m = 0; m < 3; m++) {
+    ctx.beginPath();
+    ctx.moveTo(x, y + h*(0.4+m*0.12));
+    for (let i = 0; i <= 6; i++) {
+      ctx.quadraticCurveTo(
+        x+w*(i/6+0.08), y + h*(0.25+m*0.1-rng()*0.15),
+        x+w*((i+0.5)/6), y + h*(0.4+m*0.12)
+      );
+    }
+    ctx.strokeStyle = `rgba(60,40,20,${0.2+m*0.08})`;
+    ctx.stroke();
+  }
+}
+
+// ==================== ART CANVAS ====================
+function drawArtwork(canvasId, type, seed) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const rng = mulberry32(seed);
+  const palettes = [
+    ['#C4B49A','#8A7060','#5C4A3A','#3A2E24'],
+    ['#A8B4A0','#7A8A72','#4A5C44','#2E3A2A'],
+    ['#B4A0A8','#8A7080','#5C4050','#3A2430'],
+    ['#A0A8B4','#708090','#405060','#2A3040'],
+    ['#C0A870','#907840','#604820','#402808'],
+  ];
+  const pal = palettes[seed % palettes.length];
+  const bg = ctx.createLinearGradient(0,0,w,h);
+  bg.addColorStop(0, mix(pal[0],'#F5F0E8',0.4));
+  bg.addColorStop(1, mix(pal[1],'#EAE3D5',0.3));
+  ctx.fillStyle = bg; ctx.fillRect(0,0,w,h);
+  for (let i=0;i<2000;i++) {
+    ctx.fillStyle=`rgba(${rng()*80+160|0},${rng()*60+140|0},${rng()*40+100|0},${rng()*0.04})`;
+    ctx.fillRect(rng()*w,rng()*h,1,1);
+  }
+  if (type==='landscape') drawLandscape(ctx,w,h,pal,rng);
+  else if (type==='flower') drawFlower(ctx,w,h,pal,rng);
+  else if (type==='bamboo') drawBamboo(ctx,w,h,pal,rng);
+  else if (type==='fuji') drawFuji(ctx,w,h,pal,rng);
+  else drawLandscape(ctx,w,h,pal,rng);
+  for (let i=0;i<20;i++) {
+    const x=rng()*w,y=rng()*h,r=rng()*4+1;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(140,100,60,${rng()*0.12})`; ctx.fill();
+  }
+  const vig=ctx.createRadialGradient(w/2,h/2,h*0.3,w/2,h/2,h*0.8);
+  vig.addColorStop(0,'transparent'); vig.addColorStop(1,'rgba(40,28,20,0.2)');
+  ctx.fillStyle=vig; ctx.fillRect(0,0,w,h);
+}
+
+function drawLandscape(ctx,w,h,pal,rng) {
+  for (let l=3;l>=0;l--) {
+    const y=h*(0.25+l*0.12), op=0.15+l*0.15;
+    ctx.beginPath(); ctx.moveTo(0,y+rng()*20);
+    for (let x=0;x<=w;x+=w/8) {
+      ctx.quadraticCurveTo(x+w/16,y-rng()*h*0.18*(1-l*0.1),x+w/8,y+rng()*15);
+    }
+    ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
+    ctx.fillStyle=`rgba(${hexToRgb(pal[l])},${op})`; ctx.fill();
+  }
+  for (let i=0;i<6;i++) drawPineTree(ctx,rng()*w,h*(0.45+rng()*0.25),h*(0.15+rng()*0.2),pal[2],0.5+rng()*0.5);
+  ctx.fillStyle=`rgba(${hexToRgb(pal[0])},0.2)`;
+  ctx.fillRect(0,h*0.78,w,h*0.22);
+  ctx.strokeStyle=`rgba(${hexToRgb(pal[3])},0.4)`; ctx.lineWidth=0.8;
+  for (let i=0;i<8;i++) {
+    ctx.beginPath(); ctx.moveTo(rng()*w,h*0.3+rng()*h*0.4);
+    ctx.bezierCurveTo(rng()*w,rng()*h,rng()*w,rng()*h,rng()*w,h*0.3+rng()*h*0.4);
+    ctx.stroke();
+  }
+  drawSeal(ctx,w*0.85,h*0.08,18,rng);
+}
+
+function drawFlower(ctx,w,h,pal,rng) {
+  const cx=w*0.45,cy=h*0.38;
+  for (let r=4;r>=0;r--) {
+    const pt=5+r*2, rd=15+r*14;
+    for (let p=0;p<pt;p++) {
+      const a=(p/pt)*Math.PI*2+r*0.3;
+      ctx.beginPath();
+      ctx.ellipse(cx+Math.cos(a)*rd*0.6,cy+Math.sin(a)*rd*0.6,rd*0.5,rd*0.3,a,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${hexToRgb(pal[1])},${0.5*(1-r*0.08)})`; ctx.fill();
+    }
+  }
+  ctx.strokeStyle=`rgba(${hexToRgb(pal[2])},0.7)`; ctx.lineWidth=1.5;
+  for (let i=0;i<4;i++) {
+    const a=rng()*Math.PI*2,l=40+rng()*50;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.quadraticCurveTo(cx+Math.cos(a-0.3)*l*0.6,cy+Math.sin(a-0.3)*l*0.6,cx+Math.cos(a)*l,cy+Math.sin(a)*l);
+    ctx.stroke();
+  }
+  const cx2=cx+50+rng()*30,cy2=cy+40+rng()*30;
+  for (let r=2;r>=0;r--) {
+    for (let p=0;p<5;p++) {
+      const a=(p/5)*Math.PI*2+r*0.4;
+      ctx.beginPath();
+      ctx.ellipse(cx2+Math.cos(a)*(8+r*9)*0.6,cy2+Math.sin(a)*(8+r*9)*0.6,(8+r*9)*0.45,(8+r*9)*0.28,a,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${hexToRgb(pal[0])},0.5)`; ctx.fill();
+    }
+  }
+  ctx.fillStyle='rgba(250,247,242,0.9)';
+  ctx.beginPath(); ctx.ellipse(w*0.7,h*0.25,8,5,-0.3,0,Math.PI*2); ctx.fill();
+  drawSeal(ctx,w*0.82,h*0.08,16,rng);
+}
+
+function drawBamboo(ctx,w,h,pal,rng) {
+  for (let s=0;s<7;s++) {
+    const x=(s/7)*w*0.9+w*0.05+rng()*20, sw=(rng()-0.5)*0.08;
+    ctx.strokeStyle=`rgba(${hexToRgb(pal[2])},${0.4+rng()*0.5})`; ctx.lineWidth=2+rng()*3;
+    ctx.beginPath(); ctx.moveTo(x,h);
+    ctx.bezierCurveTo(x+sw*h,h*0.7,x+sw*h*1.5,h*0.4,x+sw*h*2+rng()*20,0); ctx.stroke();
+    for (let n=1;n<6;n++) {
+      ctx.strokeStyle=`rgba(${hexToRgb(pal[3])},0.5)`; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(x-4,h-(n/6)*h); ctx.lineTo(x+4,h-(n/6)*h); ctx.stroke();
+    }
+    for (let l=0;l<(5+rng()*5|0);l++) {
+      const ly=rng()*h, lx=x+sw*ly*2, a=(rng()-0.5)*1.5-0.5, ll=20+rng()*30;
+      ctx.strokeStyle=`rgba(${hexToRgb(pal[2])},${0.5+rng()*0.4})`; ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(lx,ly);
+      ctx.quadraticCurveTo(lx+Math.cos(a)*ll*0.5,ly+Math.sin(a)*ll*0.5-5,lx+Math.cos(a)*ll,ly+Math.sin(a)*ll);
+      ctx.stroke();
+    }
+  }
+  drawCrane(ctx,w*0.6,h*0.2,30,rng);
+  drawSeal(ctx,w*0.1,h*0.08,15,rng);
+}
+
+function drawFuji(ctx,w,h,pal,rng) {
+  const sky=ctx.createLinearGradient(0,0,0,h*0.6);
+  sky.addColorStop(0,'rgba(180,200,220,0.4)'); sky.addColorStop(1,'rgba(220,210,190,0.1)');
+  ctx.fillStyle=sky; ctx.fillRect(0,0,w,h*0.6);
+  const fx=w/2,fy=h*0.15;
+  ctx.beginPath(); ctx.moveTo(fx,fy); ctx.lineTo(fx-w*0.45,h*0.55); ctx.lineTo(fx+w*0.45,h*0.55); ctx.closePath();
+  ctx.fillStyle=`rgba(${hexToRgb(pal[3])},0.5)`; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(fx,fy); ctx.lineTo(fx-w*0.1,h*0.28); ctx.lineTo(fx+w*0.1,h*0.28); ctx.closePath();
+  ctx.fillStyle='rgba(245,240,232,0.9)'; ctx.fill();
+  for (let i=0;i<4;i++) { ctx.fillStyle=`rgba(${hexToRgb(pal[0])},0.15)`; ctx.fillRect(0,h*(0.45+i*0.08),w,12); }
+  for (let i=0;i<8;i++) drawPineTree(ctx,(i/8)*w+rng()*20,h*0.58+rng()*10,h*0.12,pal[3],0.6);
+  const lake=ctx.createLinearGradient(0,h*0.7,0,h);
+  lake.addColorStop(0,`rgba(${hexToRgb(pal[0])},0.25)`); lake.addColorStop(1,`rgba(${hexToRgb(pal[1])},0.15)`);
+  ctx.fillStyle=lake; ctx.fillRect(0,h*0.7,w,h*0.3);
+  drawSeal(ctx,w*0.88,h*0.06,14,rng);
+}
+
+function drawPineTree(ctx,x,y,height,color,alpha) {
+  ctx.save(); ctx.globalAlpha=alpha;
+  ctx.fillStyle=`rgba(${hexToRgb(color)},1)`;
+  for (let t=0;t<3;t++) {
+    const ty=y-height*(0.3+t*0.3), tw=height*(0.5-t*0.12);
+    ctx.beginPath(); ctx.moveTo(x,ty-height*0.25); ctx.lineTo(x-tw,ty+height*0.08); ctx.lineTo(x+tw,ty+height*0.08); ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawCrane(ctx,x,y,size,rng) {
+  ctx.save();
+  ctx.fillStyle='rgba(250,247,242,0.92)'; ctx.strokeStyle='rgba(40,30,20,0.5)'; ctx.lineWidth=0.8;
+  ctx.beginPath(); ctx.ellipse(x,y,size*0.5,size*0.25,0.2,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x+size*0.4,y-size*0.1); ctx.quadraticCurveTo(x+size*0.7,y-size*0.5,x+size*0.6,y-size*0.6); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x,y-size*0.1); ctx.lineTo(x-size*0.8,y-size*0.4); ctx.lineTo(x-size*0.3,y+size*0.1);
+  ctx.fillStyle='rgba(240,235,225,0.8)'; ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(x+size*0.55,y-size*0.62,size*0.06,0,Math.PI*2);
+  ctx.fillStyle='rgba(180,60,40,0.8)'; ctx.fill();
+  ctx.restore();
+}
+
+function drawSeal(ctx,x,y,size,rng) {
+  ctx.save();
+  ctx.fillStyle='rgba(180,60,40,0.7)'; ctx.strokeStyle='rgba(140,40,20,0.5)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.rect(x-size/2,y-size/2,size,size); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='rgba(250,247,242,0.9)';
+  ctx.font=`bold ${size*0.45}px 'Shippori Mincho B1'`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('精',x,y-size*0.15); ctx.fillText('正',x,y+size*0.15);
+  ctx.restore();
+}
+
+function hexToRgb(hex) {
+  return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`;
+}
+function mix(h1,h2,t) {
+  const r1=parseInt(h1.slice(1,3),16),g1=parseInt(h1.slice(3,5),16),b1=parseInt(h1.slice(5,7),16);
+  const r2=parseInt(h2.slice(1,3),16),g2=parseInt(h2.slice(3,5),16),b2=parseInt(h2.slice(5,7),16);
+  return `#${((r1*(1-t)+r2*t)|0).toString(16).padStart(2,'0')}${((g1*(1-t)+g2*t)|0).toString(16).padStart(2,'0')}${((b1*(1-t)+b2*t)|0).toString(16).padStart(2,'0')}`;
+}
+function mulberry32(a) {
+  return function() {
+    a|=0; a=a+0x6D2B79F5|0;
+    var t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296;
+  }
+}
+
+// ==================== NAVIGATION ====================
+const artworks=[
+  {type:'landscape',seed:1},{type:'flower',seed:2},{type:'fuji',seed:3},
+  {type:'bamboo',seed:4},{type:'landscape',seed:5},
+];
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  updateNav(id);
+  // Hide bottom nav on timeline
+  document.querySelector('.bottom-nav').style.display = id === 'screen-timeline' ? 'none' : 'flex';
+}
+
+function switchNav(el, screenId) { showScreen(screenId); }
+
+function updateNav(screenId) {
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if (screenId==='screen-home') document.getElementById('nav-home').classList.add('active');
+  else if (screenId==='screen-detail') document.getElementById('nav-story').classList.add('active');
+  else if (screenId==='screen-mypage') document.getElementById('nav-my').classList.add('active');
+}
+
+function showDetail(idx) {
+  showScreen('screen-detail');
+  setTimeout(()=>{ drawArtwork('c-detail', artworks[idx].type, artworks[idx].seed); }, 50);
+}
+
+function selectPlan(el, name) {
+  document.querySelectorAll('.plan-option').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  showToast(T('plan_selected'));
+}
+
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ==================== INIT ====================
+window.addEventListener('DOMContentLoaded',()=>{
+  drawArtwork('c-featured','landscape',1);
+  drawArtwork('c-g1','flower',2);
+  drawArtwork('c-g2','fuji',3);
+  drawArtwork('c-g3','bamboo',4);
+  drawArtwork('c-g4','landscape',5);
+  drawArtwork('c-my1','landscape',1);
+  drawArtwork('c-hist1','flower',2);
+  drawArtwork('c-hist2','bamboo',4);
+});
+</script>
+</body>
+</html>

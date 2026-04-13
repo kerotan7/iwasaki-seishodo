@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F5F0E8">
+<title>岩崎精正堂 — 所有者ポータル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --washi:#F5F0E8; --washi-dark:#EAE3D5; --washi-deep:#DDD5C4;
+  --sumi:#1A1410; --sumi-mid:#3D3028;
+  --koke:#4A6040; --koke-light:#6B8060; --koke-pale:rgba(74,96,64,0.08);
+  --bengara:#8B3A22; --kincha:#A8873A;
+  --hai:#9E9080; --shiro:#FAF7F2;
+  --success:#4A6040; --warning:#A8873A; --info:#405870;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Shippori Mincho B1',serif;
+  background:var(--washi);color:var(--sumi);
+  min-height:100vh;max-width:430px;margin:0 auto;
+  position:relative;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1000;opacity:0.5;
+}
+.screen{display:none;min-height:100vh;padding-bottom:80px;animation:fadeIn 0.4s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes countUp{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+@keyframes expandDot{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* HEADER */
+.app-header{padding:52px 24px 20px;background:var(--washi);position:sticky;top:0;z-index:100}
+.app-header::after{content:'';position:absolute;bottom:0;left:24px;right:24px;height:1px;background:linear-gradient(90deg,transparent,var(--koke-light),transparent)}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start}
+.logo-mark{font-size:11px;letter-spacing:0.2em;color:var(--koke-light)}
+.logo-main{font-size:20px;font-weight:800;letter-spacing:0.05em;color:var(--sumi);line-height:1}
+.logo-en{font-family:'Cormorant Garamond',serif;font-size:11px;font-style:italic;color:var(--hai);letter-spacing:0.1em;margin-top:3px}
+.portal-badge{
+  background:var(--koke);color:var(--shiro);
+  font-size:10px;padding:4px 10px;letter-spacing:0.12em;
+  align-self:flex-start;margin-top:4px;
+}
+
+/* SECTION TITLE */
+.section-title{padding:24px 24px 14px;display:flex;justify-content:space-between;align-items:baseline}
+.section-title h2{font-size:15px;font-weight:600;letter-spacing:0.12em;color:var(--sumi)}
+.section-title h2::before{content:'—';color:var(--koke);margin-right:8px;font-weight:400}
+.section-more{font-size:11px;color:var(--hai);letter-spacing:0.1em;cursor:pointer}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 24px;margin-bottom:4px}
+.stat-card{background:var(--shiro);padding:16px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--koke)}
+.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--hai);margin-bottom:6px}
+.stat-value{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--sumi);line-height:1}
+.stat-unit{font-family:'Shippori Mincho B1',serif;font-size:11px;color:var(--hai);margin-left:3px}
+.stat-sub{font-size:10px;color:var(--koke);margin-top:4px;letter-spacing:0.1em}
+.stat-card.accent::before{background:var(--kincha)}
+.stat-card.accent .stat-value{color:var(--kincha)}
+
+/* ARTWORK CARD */
+.artwork-card{
+  margin:0 24px;background:var(--shiro);
+  cursor:pointer;transition:transform 0.15s;
+}
+.artwork-card:active{transform:scale(0.99)}
+.artwork-card-image{width:100%;height:160px;position:relative;overflow:hidden}
+.artwork-card-image canvas{width:100%!important;height:100%!important}
+.artwork-card-status-bar{
+  position:absolute;top:12px;left:12px;
+  background:var(--koke);color:var(--shiro);
+  font-size:10px;padding:4px 10px;letter-spacing:0.15em;
+}
+.artwork-card-status-bar.warn{background:var(--kincha)}
+.artwork-card-body{padding:16px}
+.artwork-card-title{font-size:17px;font-weight:800;letter-spacing:0.05em;margin-bottom:4px}
+.artwork-card-meta{font-size:11px;color:var(--hai);letter-spacing:0.08em;line-height:1.7}
+.artwork-card-progress{margin-top:12px}
+.progress-label{font-size:10px;letter-spacing:0.15em;color:var(--hai);margin-bottom:6px;display:flex;justify-content:space-between}
+.progress-bar-track{height:3px;background:var(--washi-dark);position:relative}
+.progress-bar-fill{height:100%;background:var(--koke);transition:width 0.8s ease}
+.progress-steps{display:flex;justify-content:space-between;margin-top:6px}
+.ps-step{font-size:9px;color:var(--hai);letter-spacing:0.05em;text-align:center}
+.ps-step.done{color:var(--koke)}
+.ps-step.active{color:var(--sumi);font-weight:600}
+
+/* ADD BUTTON */
+.add-artwork-btn{
+  margin:12px 24px 0;padding:16px 20px;
+  border:1.5px dashed var(--washi-deep);
+  display:flex;align-items:center;gap:12px;
+  cursor:pointer;transition:all 0.2s;color:var(--hai);
+  background:transparent;font-family:inherit;width:calc(100% - 48px);
+}
+.add-artwork-btn:active{background:var(--washi-dark)}
+.add-icon{font-size:22px;color:var(--koke-light)}
+.add-text{font-size:13px;letter-spacing:0.1em;color:var(--koke-light)}
+.add-sub{font-size:11px;color:var(--hai);letter-spacing:0.06em;margin-top:2px}
+
+/* NOTICE CARD */
+.notice-card{
+  margin:12px 24px 0;padding:14px 16px;
+  background:rgba(74,96,64,0.06);
+  border-left:3px solid var(--koke);
+}
+.notice-label{font-size:10px;letter-spacing:0.15em;color:var(--koke);margin-bottom:5px}
+.notice-text{font-size:13px;line-height:1.8;color:var(--sumi-mid);letter-spacing:0.04em}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;background:var(--shiro);
+  border-top:1px solid var(--washi-dark);display:flex;z-index:200;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:12px 8px 10px;cursor:pointer;position:relative}
+.nav-item.active .nav-icon{color:var(--koke)}
+.nav-item.active .nav-label{color:var(--koke)}
+.nav-item.active::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--koke)}
+.nav-icon{font-size:20px;color:var(--hai);margin-bottom:3px;line-height:1}
+.nav-label{font-size:10px;color:var(--hai);letter-spacing:0.12em}
+
+/* ===== REGISTRATION FLOW ===== */
+.reg-header{padding:52px 24px 20px;background:var(--washi);position:sticky;top:0;z-index:100}
+.reg-header::after{content:'';position:absolute;bottom:0;left:24px;right:24px;height:1px;background:linear-gradient(90deg,transparent,var(--koke-light),transparent)}
+.back-btn{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--hai);cursor:pointer;background:none;border:none;font-family:inherit;letter-spacing:0.1em;margin-bottom:14px}
+.reg-step-indicator{display:flex;gap:0}
+.rsi-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+.rsi-step::before{content:'';position:absolute;top:11px;left:50%;right:-50%;height:1px;background:var(--washi-dark);z-index:0}
+.rsi-step:last-child::before{display:none}
+.rsi-dot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--washi-dark);background:var(--shiro);z-index:1;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--hai);transition:all 0.3s}
+.rsi-step.done .rsi-dot{background:var(--koke);border-color:var(--koke);color:var(--shiro)}
+.rsi-step.active .rsi-dot{background:var(--sumi);border-color:var(--sumi);color:var(--shiro)}
+.rsi-label{font-size:9px;color:var(--hai);margin-top:4px;letter-spacing:0.06em;text-align:center}
+.rsi-step.active .rsi-label{color:var(--sumi)}
+.rsi-step.done .rsi-label{color:var(--koke)}
+
+.reg-content{padding:24px}
+.reg-step{display:none;animation:fadeIn 0.3s ease}
+.reg-step.active{display:block}
+
+.reg-title{font-size:20px;font-weight:800;letter-spacing:0.05em;margin-bottom:6px}
+.reg-subtitle{font-size:13px;color:var(--hai);letter-spacing:0.06em;line-height:1.7;margin-bottom:24px}
+
+/* Photo upload area */
+.photo-upload-area{
+  width:100%;height:220px;background:var(--washi-dark);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;margin-bottom:20px;position:relative;overflow:hidden;
+  transition:background 0.2s;
+}
+.photo-upload-area:active{background:var(--washi-deep)}
+.photo-upload-area canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
+.photo-upload-overlay{
+  position:absolute;inset:0;
+  background:rgba(26,20,16,0.45);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 0.2s;
+}
+.photo-upload-overlay.hidden{opacity:0;pointer-events:none}
+.upload-icon{font-size:32px;margin-bottom:8px}
+.upload-text{font-size:13px;color:var(--shiro);letter-spacing:0.1em}
+.upload-sub{font-size:11px;color:rgba(250,247,242,0.6);margin-top:4px;letter-spacing:0.06em}
+
+.photo-tips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
+.photo-tip{padding:10px 12px;background:var(--shiro);font-size:11px;color:var(--hai);letter-spacing:0.06em;line-height:1.6;border-left:2px solid var(--washi-deep)}
+
+/* Form fields */
+.form-group{margin-bottom:20px}
+.form-label{font-size:11px;letter-spacing:0.15em;color:var(--hai);margin-bottom:8px;display:block}
+.form-label span{color:var(--bengara);margin-left:3px}
+.form-input{
+  width:100%;background:var(--shiro);border:none;border-bottom:1px solid var(--washi-deep);
+  padding:10px 0;font-family:'Shippori Mincho B1',serif;font-size:15px;
+  color:var(--sumi);outline:none;letter-spacing:0.04em;transition:border-color 0.2s;
+}
+.form-input:focus{border-bottom-color:var(--sumi)}
+.form-input::placeholder{color:var(--hai);font-size:13px}
+.form-select-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.form-select-btn{
+  padding:12px 8px;text-align:center;border:1px solid var(--washi-dark);
+  cursor:pointer;font-family:inherit;font-size:12px;color:var(--hai);
+  background:var(--shiro);letter-spacing:0.06em;transition:all 0.2s;
+}
+.form-select-btn.selected{border-color:var(--koke);color:var(--koke);background:var(--koke-pale)}
+
+.condition-check{margin-bottom:16px}
+.cc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cc-label{font-size:13px;font-weight:600;letter-spacing:0.06em;color:var(--sumi)}
+.toggle{width:44px;height:24px;background:var(--washi-dark);border-radius:12px;position:relative;cursor:pointer;transition:background 0.2s}
+.toggle.on{background:var(--koke)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--shiro);transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.toggle.on::after{transform:translateX(20px)}
+.cc-sub{font-size:11px;color:var(--hai);letter-spacing:0.06em;line-height:1.6}
+
+.price-input-row{display:flex;align-items:baseline;gap:8px;margin-top:10px}
+.price-prefix{font-size:16px;color:var(--hai)}
+.price-input{
+  flex:1;background:none;border:none;border-bottom:1px solid var(--washi-deep);
+  padding:6px 0;font-family:'Shippori Mincho B1',serif;font-size:20px;
+  color:var(--sumi);outline:none;letter-spacing:0.04em;
+}
+.price-suffix{font-size:12px;color:var(--hai);letter-spacing:0.1em}
+
+.cost-share-slider{margin-top:12px}
+.slider-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--hai);margin-bottom:6px;letter-spacing:0.06em}
+.slider-track{height:4px;background:var(--washi-dark);border-radius:2px;position:relative;margin-bottom:6px}
+.slider-fill{height:100%;background:var(--koke);border-radius:2px;width:0%}
+.slider-thumb{width:18px;height:18px;border-radius:50%;background:var(--shiro);border:2px solid var(--koke);position:absolute;top:50%;transform:translate(-50%,-50%);left:0%;box-shadow:0 1px 4px rgba(0,0,0,0.2);cursor:pointer}
+.slider-value-display{text-align:center;font-size:13px;font-weight:600;color:var(--koke);letter-spacing:0.06em}
+
+.reg-nav{display:flex;gap:12px;margin-top:28px}
+.reg-btn{
+  flex:1;padding:16px;text-align:center;cursor:pointer;
+  font-family:inherit;font-size:13px;letter-spacing:0.1em;
+  border:1px solid var(--washi-dark);color:var(--hai);
+  background:var(--shiro);transition:all 0.2s;
+}
+.reg-btn.primary{background:var(--koke);color:var(--shiro);border-color:var(--koke)}
+.reg-btn:active{opacity:0.7}
+
+/* ===== STATUS TRACKING ===== */
+.status-header{padding:52px 24px 24px;background:var(--sumi);position:sticky;top:0;z-index:100}
+.status-back{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(250,247,242,0.6);cursor:pointer;background:none;border:none;font-family:inherit;margin-bottom:14px}
+.status-work-title{font-size:19px;font-weight:800;color:var(--shiro);letter-spacing:0.05em;margin-bottom:4px}
+.status-subtitle{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(250,247,242,0.5)}
+.current-status-badge{
+  display:inline-block;margin-top:14px;
+  background:var(--koke);color:var(--shiro);
+  font-size:11px;padding:6px 14px;letter-spacing:0.15em;
+}
+
+.status-content{padding:24px}
+
+/* Vertical timeline */
+.vtimeline{position:relative;padding-left:32px}
+.vtimeline::before{content:'';position:absolute;left:9px;top:0;bottom:0;width:1px;background:var(--washi-dark)}
+.vt-item{position:relative;margin-bottom:28px}
+.vt-item:last-child{margin-bottom:0}
+.vt-dot{
+  position:absolute;left:-32px;top:2px;
+  width:20px;height:20px;border-radius:50%;
+  border:2px solid var(--washi-dark);background:var(--shiro);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:var(--hai);z-index:1;
+}
+.vt-item.done .vt-dot{background:var(--koke);border-color:var(--koke);color:var(--shiro)}
+.vt-item.active .vt-dot{
+  background:var(--kincha);border-color:var(--kincha);color:var(--shiro);
+  animation:pulse 2s infinite;
+}
+.vt-item.pending .vt-dot{background:var(--washi-dark)}
+.vt-date{font-size:10px;letter-spacing:0.12em;color:var(--hai);margin-bottom:4px}
+.vt-title{font-size:15px;font-weight:600;letter-spacing:0.06em;color:var(--sumi);margin-bottom:5px}
+.vt-item.pending .vt-title{color:var(--hai)}
+.vt-desc{font-size:13px;line-height:1.8;color:var(--sumi-mid);letter-spacing:0.04em}
+.vt-item.pending .vt-desc{color:var(--hai)}
+.vt-image{width:100%;height:140px;margin-top:12px;overflow:hidden;position:relative}
+.vt-image canvas{width:100%!important;height:100%!important}
+.vt-message{
+  margin-top:10px;padding:12px 14px;
+  background:var(--washi-dark);
+  border-left:3px solid var(--bengara);
+}
+.vt-msg-label{font-size:10px;letter-spacing:0.15em;color:var(--bengara);margin-bottom:5px}
+.vt-msg-text{font-size:12px;line-height:1.8;color:var(--sumi-mid);font-style:italic;letter-spacing:0.04em}
+
+/* Contact btn */
+.contact-btn{
+  margin:24px 0 0;padding:16px 20px;
+  background:var(--washi-dark);display:flex;
+  justify-content:space-between;align-items:center;cursor:pointer;
+  transition:background 0.2s;
+}
+.contact-btn:active{background:var(--washi-deep)}
+.cb-label{font-size:11px;letter-spacing:0.12em;color:var(--hai);margin-bottom:3px}
+.cb-text{font-size:14px;font-weight:600;color:var(--sumi);letter-spacing:0.06em}
+
+/* ===== REACH IMPACT ===== */
+.reach-header{padding:52px 24px 24px;background:var(--washi);position:sticky;top:0;z-index:100}
+.reach-header::after{content:'';position:absolute;bottom:0;left:24px;right:24px;height:1px;background:linear-gradient(90deg,transparent,var(--koke-light),transparent)}
+.reach-back{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--hai);cursor:pointer;background:none;border:none;font-family:inherit}
+
+.reach-hero{
+  background:var(--sumi);padding:28px 24px;
+  position:relative;overflow:hidden;
+  margin-bottom:0;
+}
+.reach-hero::before{
+  content:'"';position:absolute;right:16px;top:-10px;
+  font-size:120px;font-family:'Cormorant Garamond',serif;
+  color:rgba(250,247,242,0.04);line-height:1;
+}
+.reach-hero-label{font-size:10px;letter-spacing:0.2em;color:var(--koke-light);margin-bottom:10px}
+.reach-hero-message{font-size:18px;font-weight:800;color:var(--shiro);letter-spacing:0.04em;line-height:1.6;margin-bottom:4px}
+.reach-hero-sub{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(250,247,242,0.5)}
+
+.reach-big-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--washi-dark);margin-bottom:4px}
+.rbs-item{background:var(--shiro);padding:16px 12px;text-align:center}
+.rbs-value{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--sumi);line-height:1;animation:countUp 0.6s ease}
+.rbs-label{font-size:9px;letter-spacing:0.12em;color:var(--hai);margin-top:4px}
+.rbs-item.highlight .rbs-value{color:var(--koke)}
+
+/* World map */
+.world-map-section{padding:0 24px;margin-bottom:4px}
+.world-map-container{
+  width:100%;height:200px;background:var(--washi-dark);
+  position:relative;overflow:hidden;margin-top:14px;
+}
+.world-map-container canvas{width:100%!important;height:100%!important}
+.map-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.map-legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--hai);letter-spacing:0.08em}
+.map-dot-legend{width:8px;height:8px;border-radius:50%;background:var(--koke)}
+.map-dot-legend.home{background:var(--bengara)}
+
+/* Country bars */
+.country-bars{padding:0 24px;margin-bottom:4px}
+.cb-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--washi-dark)}
+.cb-flag{font-size:18px;width:26px;text-align:center}
+.cb-country{font-size:12px;letter-spacing:0.06em;color:var(--sumi);flex:1}
+.cb-bar-wrap{width:100px;height:4px;background:var(--washi-dark);position:relative}
+.cb-bar-fill{height:100%;background:var(--koke);transition:width 1s ease}
+.cb-count{font-size:12px;color:var(--hai);min-width:30px;text-align:right;letter-spacing:0.04em}
+
+/* Plan distribution */
+.plan-dist{padding:0 24px;margin-bottom:4px}
+.pd-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--washi-dark)}
+.pd-plan{font-size:12px;font-weight:600;color:var(--sumi);letter-spacing:0.06em;width:100px}
+.pd-bar-wrap{flex:1;height:6px;background:var(--washi-dark);position:relative;overflow:hidden}
+.pd-bar-fill{height:100%;transition:width 1.2s ease}
+.pd-bar-fill.premium{background:var(--kincha)}
+.pd-bar-fill.standard{background:var(--koke)}
+.pd-bar-fill.entry{background:var(--hai)}
+.pd-count{font-size:11px;color:var(--hai);min-width:40px;text-align:right}
+
+/* Subscriber voices */
+.voices-section{padding:0 24px;margin-bottom:4px}
+.voice-card{background:var(--shiro);padding:16px 18px;margin-bottom:10px;position:relative}
+.voice-card::before{content:'"';font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--washi-dark);position:absolute;top:8px;left:14px;line-height:1}
+.voice-text{font-size:13px;line-height:1.9;color:var(--sumi-mid);letter-spacing:0.04em;padding-left:20px;font-style:italic}
+.voice-meta{margin-top:10px;display:flex;align-items:center;gap:8px}
+.voice-flag{font-size:14px}
+.voice-from{font-size:10px;letter-spacing:0.12em;color:var(--hai)}
+.voice-plan{font-size:10px;padding:2px 8px;border:1px solid var(--koke);color:var(--koke);letter-spacing:0.1em}
+
+/* Earnings card */
+.earnings-card{margin:0 24px;background:var(--sumi);padding:20px;position:relative;overflow:hidden;margin-bottom:4px}
+.earnings-card::before{content:'¥';position:absolute;right:-5px;top:-15px;font-family:'Cormorant Garamond',serif;font-size:100px;color:rgba(250,247,242,0.04)}
+.ec-label{font-size:10px;letter-spacing:0.2em;color:var(--koke-light);margin-bottom:10px}
+.ec-amount{font-family:'Cormorant Garamond',serif;font-size:40px;color:var(--shiro);letter-spacing:0.02em;line-height:1;margin-bottom:16px}
+.ec-breakdown{display:flex;flex-direction:column;gap:6px}
+.ec-row{display:flex;justify-content:space-between;align-items:center}
+.ec-row-label{font-size:11px;letter-spacing:0.1em;color:rgba(250,247,242,0.5)}
+.ec-row-value{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--shiro)}
+.ec-row-value.deduct{color:rgba(250,247,242,0.4)}
+.ec-divider{height:1px;background:rgba(250,247,242,0.1);margin:4px 0}
+
+/* TOAST */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--koke);color:var(--shiro);padding:12px 24px;font-size:13px;letter-spacing:0.1em;opacity:0;transition:all 0.3s;z-index:500;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ===== SCREEN 1: DASHBOARD ===== -->
+<div class="screen active" id="screen-dashboard">
+  <div class="app-header">
+    <div class="header-top">
+      <div>
+        <div class="logo-mark">OWNER PORTAL</div>
+        <div class="logo-main">岩崎精正堂</div>
+        <div class="logo-en">Seiseidō — For Artwork Owners</div>
+      </div>
+      <div class="portal-badge">所有者専用</div>
+    </div>
+  </div>
+
+  <div class="stats-grid" style="margin-top:16px">
+    <div class="stat-card">
+      <div class="stat-label">登録作品数</div>
+      <div class="stat-value">1<span class="stat-unit">点</span></div>
+      <div class="stat-sub">修復完了 · 貸出中</div>
+    </div>
+    <div class="stat-card accent">
+      <div class="stat-label">累計収益</div>
+      <div class="stat-value">48<span class="stat-unit">千円</span></div>
+      <div class="stat-sub">修復費用 回収済</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">鑑賞者数</div>
+      <div class="stat-value">342<span class="stat-unit">名</span></div>
+      <div class="stat-sub">8カ国から</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">今月の収益</div>
+      <div class="stat-value">8<span class="stat-unit">千円</span></div>
+      <div class="stat-sub">先月比 +12%</div>
+    </div>
+  </div>
+
+  <div class="notice-card">
+    <div class="notice-label">◆ 岩崎精正堂より</div>
+    <div class="notice-text">田中様のご先祖の作品が、今月も世界8カ国の方々のお手元に届いています。アラブ首長国連邦のコレクターの方より、購入のご打診が参っています。</div>
+  </div>
+
+  <div class="section-title">
+    <h2>登録作品</h2>
+    <span class="section-more" onclick="showScreen('screen-status')">詳細を見る →</span>
+  </div>
+
+  <div class="artwork-card" onclick="showScreen('screen-status')">
+    <div class="artwork-card-image">
+      <canvas id="c-card" width="382" height="160"></canvas>
+      <div class="artwork-card-status-bar">貸出中 — 修復完了</div>
+    </div>
+    <div class="artwork-card-body">
+      <div class="artwork-card-title">秋景山水図</div>
+      <div class="artwork-card-meta">
+        伝・狩野典信 / 江戸後期 / 絹本着色<br>
+        岩崎精正堂 修復完了 · 2024年11月
+      </div>
+      <div class="artwork-card-progress">
+        <div class="progress-label">
+          <span>修復・貸出の進捗</span>
+          <span style="color:var(--koke)">修復完了・貸出中</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width:83%"></div>
+        </div>
+        <div class="progress-steps">
+          <span class="ps-step done">受付</span>
+          <span class="ps-step done">査定</span>
+          <span class="ps-step done">修復</span>
+          <span class="ps-step active">貸出中</span>
+          <span class="ps-step">完結</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="add-artwork-btn" onclick="showScreen('screen-register')">
+    <div class="add-icon">＋</div>
+    <div>
+      <div class="add-text">新しい作品を登録する</div>
+      <div class="add-sub">蔵に眠る作品をお預けください</div>
+    </div>
+  </button>
+  <div style="height:24px"></div>
+</div>
+
+<!-- ===== SCREEN 2: REGISTRATION ===== -->
+<div class="screen" id="screen-register">
+  <div class="reg-header">
+    <button class="back-btn" onclick="showScreen('screen-dashboard')">← ダッシュボードに戻る</button>
+    <div class="reg-step-indicator" id="reg-steps">
+      <div class="rsi-step active"><div class="rsi-dot">1</div><div class="rsi-label">写真撮影</div></div>
+      <div class="rsi-step"><div class="rsi-dot">2</div><div class="rsi-label">作品情報</div></div>
+      <div class="rsi-step"><div class="rsi-dot">3</div><div class="rsi-label">ご意向</div></div>
+    </div>
+  </div>
+
+  <div class="reg-content">
+    <!-- STEP 1: Photo -->
+    <div class="reg-step active" id="reg-step-1">
+      <div class="reg-title">作品を撮影してください</div>
+      <div class="reg-subtitle">まず正面から全体が写るよう撮影してください。複数枚の場合は損傷箇所もお撮りください。</div>
+
+      <div class="photo-upload-area" onclick="simulatePhoto()" id="photo-area">
+        <canvas id="c-photo" width="382" height="220"></canvas>
+        <div class="photo-upload-overlay" id="photo-overlay">
+          <div class="upload-icon">📷</div>
+          <div class="upload-text">タップして撮影・選択</div>
+          <div class="upload-sub">JPG / PNG · 最大10MB</div>
+        </div>
+      </div>
+
+      <div class="photo-tips">
+        <div class="photo-tip">✓ 明るい自然光の下で撮影</div>
+        <div class="photo-tip">✓ 作品全体が収まるよう</div>
+        <div class="photo-tip">✓ 損傷箇所は接写も追加</div>
+        <div class="photo-tip">✓ 軸や箱があれば一緒に</div>
+      </div>
+
+      <div class="reg-nav">
+        <button class="reg-btn primary" onclick="nextRegStep(1)">次へ → 作品情報を入力</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Info -->
+    <div class="reg-step" id="reg-step-2">
+      <div class="reg-title">作品の情報を教えてください</div>
+      <div class="reg-subtitle">わかる範囲で結構です。不明な点は「不明」とご記入ください。岩崎精正堂が査定時に確認いたします。</div>
+
+      <div class="form-group">
+        <label class="form-label">作品名・通称<span>*</span></label>
+        <input class="form-input" type="text" placeholder="例：山水の掛軸、祖父の絵など" value="">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">推定作者・署名</label>
+        <input class="form-input" type="text" placeholder="例：落款あり（判読不能）、不明など">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">推定年代</label>
+        <div class="form-select-group">
+          <div class="form-select-btn" onclick="selectOption(this)">江戸時代</div>
+          <div class="form-select-btn" onclick="selectOption(this)">明治時代</div>
+          <div class="form-select-btn" onclick="selectOption(this)">大正・昭和</div>
+          <div class="form-select-btn selected" onclick="selectOption(this)">不明</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">種類・形式</label>
+        <div class="form-select-group">
+          <div class="form-select-btn selected" onclick="selectOption(this)">掛軸</div>
+          <div class="form-select-btn" onclick="selectOption(this)">屏風</div>
+          <div class="form-select-btn" onclick="selectOption(this)">額装</div>
+          <div class="form-select-btn" onclick="selectOption(this)">その他</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">損傷の状態</label>
+        <div class="form-select-group">
+          <div class="form-select-btn" onclick="selectOption(this)">軽微（汚れ程度）</div>
+          <div class="form-select-btn selected" onclick="selectOption(this)">中程度（破れあり）</div>
+          <div class="form-select-btn" onclick="selectOption(this)">重度（大きな欠損）</div>
+          <div class="form-select-btn" onclick="selectOption(this)">不明</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">入手経緯（任意）</label>
+        <input class="form-input" type="text" placeholder="例：祖父から相続、蔵を整理していて発見など">
+      </div>
+
+      <div class="reg-nav">
+        <button class="reg-btn" onclick="prevRegStep(2)">← 戻る</button>
+        <button class="reg-btn primary" onclick="nextRegStep(2)">次へ → ご意向を設定</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Conditions -->
+    <div class="reg-step" id="reg-step-3">
+      <div class="reg-title">ご意向・条件を設定</div>
+      <div class="reg-subtitle">あとからいつでも変更できます。まずは大まかな方向性だけお知らせください。</div>
+
+      <div class="condition-check">
+        <div class="cc-header">
+          <div class="cc-label">サブスク貸出を許可する</div>
+          <div class="toggle on" id="toggle-rent" onclick="toggleSwitch(this)"></div>
+        </div>
+        <div class="cc-sub">月額収益の一部（査定後に決定）がお手元に入ります。所有権はそのまま保持されます。</div>
+      </div>
+
+      <div class="condition-check">
+        <div class="cc-header">
+          <div class="cc-label">条件付き売却を検討する</div>
+          <div class="toggle" id="toggle-sell" onclick="toggleSwitch(this)"></div>
+        </div>
+        <div class="cc-sub">最低売却価格を設定できます。その金額以上のオファーが来た場合にのみご連絡します。価格は非公開です。</div>
+        <div id="sell-price-section" style="display:none;margin-top:14px">
+          <div class="form-label">最低売却希望価格（税込）</div>
+          <div class="price-input-row">
+            <span class="price-prefix">¥</span>
+            <input class="price-input" type="number" placeholder="0">
+            <span class="price-suffix">以上で売却可</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="condition-check">
+        <div class="cc-header">
+          <div class="cc-label">修復費用の負担</div>
+        </div>
+        <div class="cc-sub">負担割合が高いほど、収益の取り分も大きくなります。修復費用は査定後に確定します。</div>
+        <div class="cost-share-slider" id="cost-slider">
+          <div class="slider-labels">
+            <span>負担0%（収益少）</span>
+            <span>負担100%（収益大）</span>
+          </div>
+          <div class="slider-track" id="slider-track" onclick="moveSlider(event)">
+            <div class="slider-fill" id="slider-fill"></div>
+            <div class="slider-thumb" id="slider-thumb"></div>
+          </div>
+          <div class="slider-value-display" id="slider-display">自己負担 50% — 収益分配 標準</div>
+        </div>
+      </div>
+
+      <div style="padding:16px;background:var(--washi-dark);margin-top:8px;margin-bottom:0">
+        <div style="font-size:10px;letter-spacing:0.15em;color:var(--koke);margin-bottom:6px">◆ 大切なお約束</div>
+        <div style="font-size:12px;line-height:1.9;color:var(--sumi-mid)">作品の安全は岩崎精正堂と連携する金融機関が責任を持って保証します。万一の損傷・紛失の際は保険にて全額補償いたします。</div>
+      </div>
+
+      <div class="reg-nav">
+        <button class="reg-btn" onclick="prevRegStep(3)">← 戻る</button>
+        <button class="reg-btn primary" onclick="submitRegistration()">登録を申し込む</button>
+      </div>
+      <div style="height:16px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 3: STATUS TRACKING ===== -->
+<div class="screen" id="screen-status">
+  <div class="status-header">
+    <button class="status-back" onclick="showScreen('screen-dashboard')">← ダッシュボードに戻る</button>
+    <div class="status-work-title">秋景山水図</div>
+    <div class="status-subtitle">Autumn Mountain Landscape — 岩崎精正堂</div>
+    <div class="current-status-badge">● 修復完了 · 現在貸出中</div>
+  </div>
+
+  <div class="status-content">
+    <div class="vtimeline">
+
+      <div class="vt-item done">
+        <div class="vt-dot">✓</div>
+        <div class="vt-date">2024年8月12日</div>
+        <div class="vt-title">受付・初回査定</div>
+        <div class="vt-desc">作品を受領。絹本の経糸破断（3箇所）、彩色の剥落（上部）を確認。修復価値は十分にあると判断。推定価値：修復前 ¥80,000〜120,000。</div>
+        <div class="vt-image"><canvas id="c-before" width="382" height="140"></canvas></div>
+        <div class="vt-message">
+          <div class="vt-msg-label">岩崎正克より</div>
+          <div class="vt-msg-text">「初めて手に取った時、破れよりも、色の奥に残る絵師の気迫に心を打たれました。必ず元の姿に戻します。」</div>
+        </div>
+      </div>
+
+      <div class="vt-item done">
+        <div class="vt-dot">✓</div>
+        <div class="vt-date">2024年9月3日 〜 10月28日</div>
+        <div class="vt-title">修復作業（全56日）</div>
+        <div class="vt-desc">裏打除去・水洗・和紙補填・彩色固着・新裏打ち・再表装。軸木は当時様式に倣い桐材で新調。修復費用：¥120,000（田中様負担50% = ¥60,000）。</div>
+      </div>
+
+      <div class="vt-item done">
+        <div class="vt-dot">✓</div>
+        <div class="vt-date">2024年11月1日</div>
+        <div class="vt-title">修復完了・貸出開始</div>
+        <div class="vt-desc">修復後の推定価値：¥350,000〜500,000。サブスクプラン「幽玄」（月額¥50,000）にて貸出開始。修復費用は5ヶ月で全額回収済。</div>
+        <div class="vt-image"><canvas id="c-after" width="382" height="140"></canvas></div>
+        <div class="vt-message">
+          <div class="vt-msg-label">岩崎正克より</div>
+          <div class="vt-msg-text">「完成した時、田中様のご先祖が最初にこの絵を手にした時の気持ちがわかった気がしました。本当に美しい作品です。」</div>
+        </div>
+      </div>
+
+      <div class="vt-item active">
+        <div class="vt-dot">●</div>
+        <div class="vt-date">2024年11月〜現在</div>
+        <div class="vt-title">サブスク貸出中（継続中）</div>
+        <div class="vt-desc">国内外のご利用者342名に鑑賞いただきました。アラブ首長国連邦のコレクターより購入打診あり（¥480,000）。田中様のご判断をお待ちしています。</div>
+        <div class="vt-message">
+          <div class="vt-msg-label">岩崎正克より</div>
+          <div class="vt-msg-text">「作品は今、世界の人々の心に触れています。ご先祖の作品がこれほど多くの方に愛されているのは、田中様がお預けくださったからです。」</div>
+        </div>
+      </div>
+
+      <div class="vt-item pending">
+        <div class="vt-dot">○</div>
+        <div class="vt-date">— 今後の予定 —</div>
+        <div class="vt-title">貸出継続 or 売却・返却</div>
+        <div class="vt-desc">いつでもご返却・売却・貸出継続をお選びいただけます。</div>
+      </div>
+    </div>
+
+    <div class="contact-btn" onclick="showToast('岩崎精正堂に連絡しました')">
+      <div>
+        <div class="cb-label">気になることがあれば</div>
+        <div class="cb-text">岩崎精正堂に連絡する</div>
+      </div>
+      <div style="font-size:18px;color:var(--koke)">→</div>
+    </div>
+
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 4: REACH IMPACT ===== -->
+<div class="screen" id="screen-reach">
+  <div class="reach-header">
+    <button class="reach-back" onclick="showScreen('screen-dashboard')">← ダッシュボードに戻る</button>
+  </div>
+
+  <div class="reach-hero">
+    <div class="reach-hero-label">◆ YOUR IMPACT</div>
+    <div class="reach-hero-message">あなたの作品が<br>世界の人々の心に届いています</div>
+    <div class="reach-hero-sub">Autumn Mountain Landscape — 秋景山水図</div>
+  </div>
+
+  <div class="reach-big-stats">
+    <div class="rbs-item highlight">
+      <div class="rbs-value">342</div>
+      <div class="rbs-label">総鑑賞者数</div>
+    </div>
+    <div class="rbs-item">
+      <div class="rbs-value">8</div>
+      <div class="rbs-label">鑑賞国数</div>
+    </div>
+    <div class="rbs-item">
+      <div class="rbs-value">6</div>
+      <div class="rbs-label">貸出ヶ月</div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>世界への広がり</h2>
+  </div>
+
+  <div class="world-map-section">
+    <div class="world-map-container">
+      <canvas id="c-worldmap" width="382" height="200"></canvas>
+    </div>
+    <div class="map-legend">
+      <div class="map-legend-item"><div class="map-dot-legend home"></div>日本（発祥）</div>
+      <div class="map-legend-item"><div class="map-dot-legend"></div>鑑賞国</div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>国別 鑑賞者数</h2>
+  </div>
+
+  <div class="country-bars">
+    <div class="cb-item"><div class="cb-flag">🇯🇵</div><div class="cb-country">日本</div><div class="cb-bar-wrap"><div class="cb-bar-fill" style="width:100%;background:var(--bengara)"></div></div><div class="cb-count">156</div></div>
+    <div class="cb-item"><div class="cb-flag">🇺🇸</div><div class="cb-country">アメリカ</div><div class="cb-bar-wrap"><div class="cb-bar-fill" style="width:52%"></div></div><div class="cb-count">81</div></div>
+    <div class="cb-item"><div class="cb-flag">🇦🇪</div><div class="cb-country">アラブ首長国連邦</div><div class="cb-bar-wrap"><div class="cb-bar-fill" style="width:28%"></div></div><div class="cb-count">44</div></div>
+    <div class="cb-item"><div class="cb-flag">🇨🇳</div><div class="cb-country">中国</div><div class="cb-bar-wrap"><div class="cb-bar-fill" style="width:22%"></div></div><div class="cb-count">34</div></div>
+    <div class="cb-item"><div class="cb-flag">🇬🇧</div><div class="cb-country">イギリス</div><div class="cb-bar-wrap"><div class="cb-bar-fill" style="width:12%"></div></div><div class="cb-count">18</div></div>
+    <div class="cb-item"><div class="cb-flag">🇩🇪</div><div class="cb-country">ドイツ</div><div class="cb-bar-wrap"><div class="cb-bar-fill" style="width:6%"></div></div><div class="cb-count">9</div></div>
+  </div>
+
+  <div class="section-title">
+    <h2>プラン別 鑑賞内訳</h2>
+  </div>
+
+  <div class="plan-dist">
+    <div class="pd-item"><div class="pd-plan">至高 SHIKO</div><div class="pd-bar-wrap"><div class="pd-bar-fill premium" style="width:26%"></div></div><div class="pd-count">12名</div></div>
+    <div class="pd-item"><div class="pd-plan">幽玄 YUGEN</div><div class="pd-bar-wrap"><div class="pd-bar-fill premium" style="width:48%"></div></div><div class="pd-count">52名</div></div>
+    <div class="pd-item"><div class="pd-plan">雅 MIYABI</div><div class="pd-bar-wrap"><div class="pd-bar-fill standard" style="width:100%"></div></div><div class="pd-count">187名</div></div>
+    <div class="pd-item"><div class="pd-plan">暁 AKATSUKI</div><div class="pd-bar-wrap"><div class="pd-bar-fill entry" style="width:42%"></div></div><div class="pd-count">91名</div></div>
+  </div>
+
+  <div class="section-title">
+    <h2>鑑賞者の声</h2>
+  </div>
+
+  <div class="voices-section">
+    <div class="voice-card">
+      <div class="voice-text">この掛軸が届いた日、書斎に飾ると空間が一変しました。毎朝この絵を眺めながら、江戸の山河に思いを馳せる時間が、今では一日の中で一番大切な瞬間です。</div>
+      <div class="voice-meta">
+        <div class="voice-flag">🇯🇵</div>
+        <div class="voice-from">東京・60代男性</div>
+        <div class="voice-plan">雅プラン</div>
+      </div>
+    </div>
+    <div class="voice-card">
+      <div class="voice-text">I never thought a 200-year-old Japanese painting could move me this deeply. The restoration work is extraordinary — it feels both ancient and alive. I've requested to purchase it.</div>
+      <div class="voice-meta">
+        <div class="voice-flag">🇦🇪</div>
+        <div class="voice-from">Dubai — Art collector</div>
+        <div class="voice-plan">至高プラン</div>
+      </div>
+    </div>
+    <div class="voice-card">
+      <div class="voice-text">在远离故乡的异国，每天看到这幅描绘山水的挂轴，内心会有一种奇妙的平静。它跨越了国界，触动了我对自然的感情。</div>
+      <div class="voice-meta">
+        <div class="voice-flag">🇨🇳</div>
+        <div class="voice-from">上海出身・NY在住</div>
+        <div class="voice-plan">幽玄プラン</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>収益サマリー</h2>
+  </div>
+
+  <div class="earnings-card">
+    <div class="ec-label">CUMULATIVE EARNINGS</div>
+    <div class="ec-amount">¥48,000</div>
+    <div class="ec-breakdown">
+      <div class="ec-row">
+        <div class="ec-row-label">サブスク収益（6ヶ月分）</div>
+        <div class="ec-row-value">¥108,000</div>
+      </div>
+      <div class="ec-divider"></div>
+      <div class="ec-row">
+        <div class="ec-row-label">修復費用（自己負担50%）</div>
+        <div class="ec-row-value deduct">− ¥60,000</div>
+      </div>
+      <div class="ec-row">
+        <div class="ec-row-label">岩崎精正堂 手数料（15%）</div>
+        <div class="ec-row-value deduct">− ¥16,200</div>
+      </div>
+      <div class="ec-row">
+        <div class="ec-row-label">エスクロー管理費（2%）</div>
+        <div class="ec-row-value deduct">− ¥2,160</div>
+      </div>
+      <div class="ec-divider"></div>
+      <div class="ec-row">
+        <div class="ec-row-label" style="color:rgba(250,247,242,0.8)">手取り累計</div>
+        <div class="ec-row-value" style="font-size:20px;color:var(--kincha)">¥29,640</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:16px 24px;margin-top:12px">
+    <div style="font-size:11px;color:var(--hai);line-height:1.9;letter-spacing:0.05em">
+      ※ サブスク収益は毎月25日に指定口座へ振込。全取引は独立した第三者金融機関（エスクロー）が管理しています。
+    </div>
+  </div>
+  <div style="height:24px"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="nav-item active" onclick="switchNav(this,'screen-dashboard')" id="nav-dash">
+    <div class="nav-icon">🏠</div>
+    <div class="nav-label">ホーム</div>
+  </div>
+  <div class="nav-item" onclick="switchNav(this,'screen-status')" id="nav-status">
+    <div class="nav-icon">📋</div>
+    <div class="nav-label">修復状況</div>
+  </div>
+  <div class="nav-item" onclick="switchNav(this,'screen-reach')" id="nav-reach">
+    <div class="nav-icon">🌏</div>
+    <div class="nav-label">リーチ</div>
+  </div>
+  <div class="nav-item" onclick="switchNav(this,'screen-register')" id="nav-reg">
+    <div class="nav-icon">＋</div>
+    <div class="nav-label">作品登録</div>
+  </div>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== NAVIGATION ====================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  updateNav(id);
+  if (id==='screen-reach') { setTimeout(drawWorldMap, 100); }
+  if (id==='screen-status') { setTimeout(()=>{ drawStatusArt('c-before',true); drawStatusArt('c-after',false); },100); }
+}
+function switchNav(el,id){ showScreen(id); }
+function updateNav(id){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const map={'screen-dashboard':'nav-dash','screen-status':'nav-status','screen-reach':'nav-reach','screen-register':'nav-reg'};
+  if(map[id]) document.getElementById(map[id]).classList.add('active');
+}
+
+// ==================== REGISTRATION ====================
+let currentRegStep = 1;
+function nextRegStep(from) {
+  goToRegStep(from + 1);
+}
+function prevRegStep(from) {
+  goToRegStep(from - 1);
+}
+function goToRegStep(step) {
+  document.querySelectorAll('.reg-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById(`reg-step-${step}`).classList.add('active');
+  const steps = document.querySelectorAll('.rsi-step');
+  steps.forEach((s,i)=>{
+    s.classList.remove('active','done');
+    if(i < step-1) s.classList.add('done');
+    else if(i === step-1) s.classList.add('active');
+  });
+  steps.forEach((s,i)=>{
+    const dot = s.querySelector('.rsi-dot');
+    dot.textContent = i < step-1 ? '✓' : (i+1).toString();
+  });
+  currentRegStep = step;
+  document.querySelector('.reg-content').scrollTop = 0;
+}
+
+function submitRegistration() {
+  showToast('申し込みを受け付けました。岩崎精正堂より3営業日以内にご連絡いたします。');
+  setTimeout(()=>showScreen('screen-dashboard'), 1500);
+}
+
+function selectOption(el) {
+  const group = el.parentElement;
+  group.querySelectorAll('.form-select-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleSwitch(el) {
+  el.classList.toggle('on');
+  if(el.id==='toggle-sell') {
+    document.getElementById('sell-price-section').style.display = el.classList.contains('on') ? 'block' : 'none';
+  }
+}
+
+let sliderVal = 50;
+function moveSlider(e) {
+  const track = document.getElementById('slider-track');
+  const rect = track.getBoundingClientRect();
+  const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  sliderVal = Math.round(x * 100);
+  document.getElementById('slider-fill').style.width = sliderVal + '%';
+  document.getElementById('slider-thumb').style.left = sliderVal + '%';
+  const labels = ['負担0% — 収益は最小限', '負担25% — 収益分配 少なめ', '負担50% — 収益分配 標準', '負担75% — 収益分配 多め', '負担100% — 収益分配 最大'];
+  const idx = Math.min(4, Math.floor(sliderVal / 25));
+  document.getElementById('slider-display').textContent = `自己負担 ${sliderVal}% — ${['少', '少', '標準', '多', '最大'][idx]}`;
+}
+
+let photoShown = false;
+function simulatePhoto() {
+  if (!photoShown) {
+    photoShown = true;
+    drawDamagedArt('c-photo');
+    document.getElementById('photo-overlay').classList.add('hidden');
+    showToast('写真を選択しました');
+  }
+}
+
+// ==================== CANVAS ART ====================
+function mulberry32(a) {
+  return function() {
+    a|=0; a=a+0x6D2B79F5|0;
+    var t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296;
+  }
+}
+function hexToRgb(hex){return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`}
+
+function drawLandscapeArt(canvasId, damaged) {
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w=canvas.width, h=canvas.height;
+  const rng = mulberry32(42);
+
+  if(damaged) {
+    ctx.fillStyle='#8A7560'; ctx.fillRect(0,0,w,h);
+    for(let i=0;i<1500;i++){ctx.fillStyle=`rgba(${120+rng()*40|0},${100+rng()*30|0},${70+rng()*20|0},0.04)`;ctx.fillRect(rng()*w,rng()*h,2,1);}
+    // Faded landscape
+    ctx.strokeStyle='rgba(50,35,20,0.35)'; ctx.lineWidth=1;
+    for(let l=0;l<3;l++){
+      ctx.beginPath(); ctx.moveTo(0,h*(0.3+l*0.15));
+      for(let x=0;x<=w;x+=w/6) ctx.quadraticCurveTo(x+w/12,h*(0.15+l*0.1-rng()*0.1),x+w/6,h*(0.3+l*0.15));
+      ctx.stroke();
+    }
+    // Damage: foxing, tears, stains
+    for(let i=0;i<40;i++){const x=rng()*w,y=rng()*h,r=rng()*10+2;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=`rgba(160,120,70,${rng()*0.2})`;ctx.fill();}
+    ctx.strokeStyle='rgba(40,25,10,0.6)'; ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(w*0.35,0);ctx.quadraticCurveTo(w*0.3,h*0.3,w*0.25,h*0.6);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(w*0.7,h*0.1);ctx.lineTo(w*0.72,h*0.7);ctx.stroke();
+    ctx.fillStyle='rgba(90,65,40,0.25)';ctx.fillRect(0,0,w*0.3,h*0.35);
+    ctx.fillStyle='rgba(120,90,50,0.15)';ctx.fillRect(w*0.65,h*0.6,w*0.35,h*0.4);
+    const vig=ctx.createRadialGradient(w/2,h/2,h*0.1,w/2,h/2,h*0.7);
+    vig.addColorStop(0,'transparent');vig.addColorStop(1,'rgba(20,10,5,0.4)');
+    ctx.fillStyle=vig;ctx.fillRect(0,0,w,h);
+    ctx.fillStyle='rgba(140,100,60,0.06)';ctx.fillRect(0,0,w,h);
+  } else {
+    // Restored beautiful version
+    const bg=ctx.createLinearGradient(0,0,w,h);
+    bg.addColorStop(0,'#D8CDB8'); bg.addColorStop(1,'#C4B8A0');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,w,h);
+    for(let i=0;i<2000;i++){ctx.fillStyle=`rgba(${150+rng()*60|0},${130+rng()*50|0},${90+rng()*40|0},0.03)`;ctx.fillRect(rng()*w,rng()*h,1,1);}
+    // Mountains
+    const mColors=['rgba(80,60,40,0.15)','rgba(70,55,38,0.22)','rgba(60,45,30,0.3)','rgba(50,38,25,0.38)'];
+    for(let l=3;l>=0;l--){
+      const y=h*(0.22+l*0.13);
+      ctx.beginPath();ctx.moveTo(0,y+rng()*15);
+      for(let x=0;x<=w;x+=w/7) ctx.quadraticCurveTo(x+w/14,y-rng()*h*0.15,x+w/7,y+rng()*12);
+      ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();
+      ctx.fillStyle=mColors[l];ctx.fill();
+    }
+    for(let i=0;i<5;i++){const tx=rng()*w,ty=h*(0.45+rng()*0.2),th=h*(0.12+rng()*0.15);drawPine(ctx,tx,ty,th,'rgba(50,65,40,0.6)');}
+    ctx.fillStyle='rgba(180,165,140,0.18)';ctx.fillRect(0,h*0.8,w,h*0.2);
+    // Seal
+    ctx.fillStyle='rgba(160,55,35,0.7)';ctx.fillRect(w*0.83,h*0.06,20,20);
+    ctx.fillStyle='rgba(250,247,242,0.9)';ctx.font=`bold 7px 'Shippori Mincho B1'`;ctx.textAlign='center';
+    ctx.fillText('精',w*0.83+10,h*0.06+9);ctx.fillText('正',w*0.83+10,h*0.06+18);
+    const vig=ctx.createRadialGradient(w/2,h/2,h*0.25,w/2,h/2,h*0.75);
+    vig.addColorStop(0,'transparent');vig.addColorStop(1,'rgba(30,20,10,0.18)');
+    ctx.fillStyle=vig;ctx.fillRect(0,0,w,h);
+  }
+}
+
+function drawPine(ctx,x,y,h,color){
+  ctx.fillStyle=color;
+  for(let t=0;t<3;t++){const ty=y-h*(0.28+t*0.28),tw=h*(0.5-t*0.12);ctx.beginPath();ctx.moveTo(x,ty-h*0.22);ctx.lineTo(x-tw,ty+h*0.07);ctx.lineTo(x+tw,ty+h*0.07);ctx.closePath();ctx.fill();}
+}
+
+function drawStatusArt(canvasId, damaged) { drawLandscapeArt(canvasId, damaged); }
+function drawDamagedArt(canvasId) { drawLandscapeArt(canvasId, true); }
+
+// WORLD MAP (simplified)
+function drawWorldMap() {
+  const canvas = document.getElementById('c-worldmap');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w=canvas.width, h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#EAE3D5'; ctx.fillRect(0,0,w,h);
+
+  // Ocean
+  const ocean=ctx.createLinearGradient(0,0,w,h);
+  ocean.addColorStop(0,'rgba(100,130,160,0.12)');
+  ocean.addColorStop(1,'rgba(80,110,140,0.08)');
+  ctx.fillStyle=ocean; ctx.fillRect(0,0,w,h);
+
+  // Simplified continent shapes
+  const landColor='rgba(160,148,128,0.55)';
+  ctx.fillStyle=landColor;
+
+  // North America (rough)
+  ctx.beginPath();
+  ctx.moveTo(w*0.04,h*0.12);ctx.lineTo(w*0.22,h*0.08);ctx.lineTo(w*0.28,h*0.12);
+  ctx.lineTo(w*0.3,h*0.3);ctx.lineTo(w*0.2,h*0.42);ctx.lineTo(w*0.12,h*0.45);
+  ctx.lineTo(w*0.06,h*0.38);ctx.lineTo(w*0.02,h*0.25);ctx.closePath();
+  ctx.fill();
+  // Central America
+  ctx.beginPath();ctx.ellipse(w*0.21,h*0.52,w*0.025,h*0.06,0.2,0,Math.PI*2);ctx.fill();
+  // South America
+  ctx.beginPath();
+  ctx.moveTo(w*0.22,h*0.55);ctx.lineTo(w*0.3,h*0.52);ctx.lineTo(w*0.34,h*0.62);
+  ctx.lineTo(w*0.3,h*0.82);ctx.lineTo(w*0.22,h*0.88);ctx.lineTo(w*0.16,h*0.78);
+  ctx.lineTo(w*0.18,h*0.62);ctx.closePath();ctx.fill();
+  // Europe
+  ctx.beginPath();
+  ctx.moveTo(w*0.44,h*0.1);ctx.lineTo(w*0.54,h*0.08);ctx.lineTo(w*0.56,h*0.18);
+  ctx.lineTo(w*0.52,h*0.28);ctx.lineTo(w*0.44,h*0.26);ctx.lineTo(w*0.4,h*0.18);ctx.closePath();
+  ctx.fill();
+  // Africa
+  ctx.beginPath();
+  ctx.moveTo(w*0.46,h*0.3);ctx.lineTo(w*0.56,h*0.28);ctx.lineTo(w*0.6,h*0.4);
+  ctx.lineTo(w*0.58,h*0.62);ctx.lineTo(w*0.5,h*0.74);ctx.lineTo(w*0.44,h*0.64);
+  ctx.lineTo(w*0.42,h*0.46);ctx.closePath();ctx.fill();
+  // Middle East
+  ctx.beginPath();ctx.ellipse(w*0.62,h*0.3,w*0.05,h*0.07,0.1,0,Math.PI*2);ctx.fill();
+  // Asia
+  ctx.beginPath();
+  ctx.moveTo(w*0.55,h*0.08);ctx.lineTo(w*0.82,h*0.06);ctx.lineTo(w*0.9,h*0.18);
+  ctx.lineTo(w*0.88,h*0.35);ctx.lineTo(w*0.78,h*0.42);ctx.lineTo(w*0.68,h*0.38);
+  ctx.lineTo(w*0.6,h*0.28);ctx.lineTo(w*0.56,h*0.18);ctx.closePath();ctx.fill();
+  // India
+  ctx.beginPath();ctx.moveTo(w*0.68,h*0.38);ctx.lineTo(w*0.74,h*0.36);ctx.lineTo(w*0.72,h*0.52);ctx.lineTo(w*0.68,h*0.55);ctx.lineTo(w*0.65,h*0.46);ctx.closePath();ctx.fill();
+  // SE Asia
+  ctx.beginPath();ctx.ellipse(w*0.82,h*0.48,w*0.035,h*0.06,0.1,0,Math.PI*2);ctx.fill();
+  // Australia
+  ctx.beginPath();
+  ctx.moveTo(w*0.76,h*0.62);ctx.lineTo(w*0.88,h*0.6);ctx.lineTo(w*0.92,h*0.72);
+  ctx.lineTo(w*0.86,h*0.82);ctx.lineTo(w*0.76,h*0.8);ctx.lineTo(w*0.72,h*0.7);ctx.closePath();
+  ctx.fill();
+
+  // Grid lines (lat/lon)
+  ctx.strokeStyle='rgba(160,148,128,0.15)'; ctx.lineWidth=0.5;
+  for(let i=0;i<=4;i++){ctx.beginPath();ctx.moveTo(0,h*i/4);ctx.lineTo(w,h*i/4);ctx.stroke();}
+  for(let i=0;i<=6;i++){ctx.beginPath();ctx.moveTo(w*i/6,0);ctx.lineTo(w*i/6,h);ctx.stroke();}
+
+  // Country dots with ripple effect
+  const locations = [
+    {x:0.83,y:0.26,color:'#8B3A22',size:10,home:true},  // Japan
+    {x:0.16,y:0.28,color:'#4A6040',size:7},  // USA
+    {x:0.63,y:0.26,color:'#4A6040',size:7},  // UAE
+    {x:0.82,y:0.22,color:'#4A6040',size:6},  // China
+    {x:0.47,y:0.16,color:'#4A6040',size:5},  // UK
+    {x:0.5,y:0.15,color:'#4A6040',size:4},   // Germany
+    {x:0.85,y:0.44,color:'#4A6040',size:4},  // Singapore
+    {x:0.82,y:0.7,color:'#4A6040',size:4},   // Australia
+  ];
+
+  locations.forEach((loc,i)=>{
+    const cx=loc.x*w, cy=loc.y*h;
+    // Ripple
+    if(loc.home) {
+      for(let r=1;r<=3;r++){
+        ctx.beginPath(); ctx.arc(cx,cy,loc.size*r,0,Math.PI*2);
+        ctx.strokeStyle=`rgba(139,58,34,${0.15/r})`;
+        ctx.lineWidth=1; ctx.stroke();
+      }
+    }
+    // Dot
+    ctx.beginPath(); ctx.arc(cx,cy,loc.size/2+2,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${hexToRgb(loc.color)},0.2)`; ctx.fill();
+    ctx.beginPath(); ctx.arc(cx,cy,loc.size/2,0,Math.PI*2);
+    ctx.fillStyle=loc.color; ctx.fill();
+
+    // Connection line from Japan
+    if(!loc.home) {
+      ctx.beginPath();
+      ctx.moveTo(locations[0].x*w, locations[0].y*h);
+      const midX=(locations[0].x*w + cx)/2;
+      const midY=Math.min(locations[0].y*h, cy) - 20;
+      ctx.quadraticCurveTo(midX, midY, cx, cy);
+      ctx.strokeStyle=`rgba(74,96,64,0.18)`; ctx.lineWidth=1; ctx.setLineDash([3,4]); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  });
+
+  // Japan label
+  ctx.fillStyle='var(--sumi)';
+  ctx.font=`10px 'Shippori Mincho B1'`; ctx.textAlign='left';
+  ctx.fillStyle='rgba(139,58,34,0.8)';
+  ctx.fillText('日本', locations[0].x*w+8, locations[0].y*h+4);
+}
+
+// ==================== INIT ====================
+window.addEventListener('DOMContentLoaded',()=>{
+  drawLandscapeArt('c-card', false);
+  // Init slider
+  document.getElementById('slider-fill').style.width='50%';
+  document.getElementById('slider-thumb').style.left='50%';
+});
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>

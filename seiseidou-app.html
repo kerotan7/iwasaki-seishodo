@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F5F0E8">
+<title>岩崎精正堂</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --washi: #F5F0E8;
+    --washi-dark: #EAE3D5;
+    --sumi: #1A1410;
+    --sumi-mid: #3D3028;
+    --bengara: #8B3A22;
+    --kincha: #A8873A;
+    --koke: #5E6B52;
+    --hai: #9E9080;
+    --shiro: #FAF7F2;
+    --shadow: rgba(26,20,16,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Shippori Mincho B1', serif;
+    background: var(--washi);
+    color: var(--sumi);
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Paper texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  /* SCREENS */
+  .screen {
+    display: none;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    animation: fadeIn 0.4s ease;
+  }
+  .screen.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* HEADER */
+  .app-header {
+    padding: 52px 24px 20px;
+    background: var(--washi);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .app-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 24px; right: 24px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--hai), transparent);
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+  }
+
+  .logo-mark {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--hai);
+    font-weight: 400;
+  }
+
+  .logo-main {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--sumi);
+    line-height: 1;
+  }
+
+  .logo-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-style: italic;
+    color: var(--hai);
+    letter-spacing: 0.1em;
+    margin-top: 3px;
+  }
+
+  .header-badge {
+    background: var(--bengara);
+    color: var(--shiro);
+    font-size: 10px;
+    padding: 4px 10px;
+    letter-spacing: 0.12em;
+    border-radius: 0;
+  }
+
+  /* PLAN INDICATOR */
+  .plan-bar {
+    margin: 16px 24px 0;
+    padding: 10px 16px;
+    background: var(--washi-dark);
+    border-left: 3px solid var(--kincha);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .plan-label {
+    font-size: 11px;
+    color: var(--hai);
+    letter-spacing: 0.1em;
+  }
+
+  .plan-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--kincha);
+    letter-spacing: 0.08em;
+  }
+
+  .plan-cycle {
+    font-size: 11px;
+    color: var(--hai);
+  }
+
+  /* SECTION TITLE */
+  .section-title {
+    padding: 28px 24px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .section-title h2 {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--sumi);
+    position: relative;
+  }
+
+  .section-title h2::before {
+    content: '—';
+    color: var(--bengara);
+    margin-right: 8px;
+    font-weight: 400;
+  }
+
+  .section-more {
+    font-size: 11px;
+    color: var(--hai);
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  /* CURRENT WORK - Featured */
+  .current-work {
+    margin: 0 24px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .current-work-image {
+    width: 100%;
+    height: 260px;
+    background: var(--sumi-mid);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .current-work-image canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .current-work-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 40px 20px 20px;
+    background: linear-gradient(transparent, rgba(26,20,16,0.82));
+  }
+
+  .work-tag {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--kincha);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .work-title-large {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--shiro);
+    letter-spacing: 0.06em;
+    line-height: 1.3;
+  }
+
+  .work-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: rgba(250,247,242,0.6);
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .current-work-info {
+    padding: 16px 0;
+    display: flex;
+    gap: 20px;
+  }
+
+  .info-item {
+    flex: 1;
+  }
+
+  .info-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--hai);
+    margin-bottom: 3px;
+  }
+
+  .info-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sumi);
+    letter-spacing: 0.05em;
+  }
+
+  /* GALLERY GRID */
+  .gallery-grid {
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .gallery-item {
+    cursor: pointer;
+    position: relative;
+  }
+
+  .gallery-item-image {
+    width: 100%;
+    aspect-ratio: 3/4;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gallery-item-image canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .gallery-item-info {
+    padding: 10px 0 6px;
+  }
+
+  .gallery-item-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--sumi);
+    line-height: 1.4;
+  }
+
+  .gallery-item-meta {
+    font-size: 10px;
+    color: var(--hai);
+    margin-top: 3px;
+    letter-spacing: 0.08em;
+  }
+
+  .gallery-item-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px;
+    color: var(--kincha);
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .availability-dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--koke);
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+
+  .availability-dot.taken {
+    background: var(--bengara);
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--shiro);
+    border-top: 1px solid var(--washi-dark);
+    display: flex;
+    z-index: 200;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 8px 10px;
+    cursor: pointer;
+    position: relative;
+    transition: opacity 0.2s;
+  }
+
+  .nav-item.active .nav-icon { color: var(--bengara); }
+  .nav-item.active .nav-label { color: var(--bengara); }
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 2px;
+    background: var(--bengara);
+  }
+
+  .nav-icon {
+    font-size: 20px;
+    color: var(--hai);
+    margin-bottom: 3px;
+    line-height: 1;
+  }
+
+  .nav-label {
+    font-size: 10px;
+    color: var(--hai);
+    letter-spacing: 0.12em;
+  }
+
+  /* DETAIL SCREEN */
+  .detail-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 52px 24px 16px;
+    background: var(--washi);
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--hai);
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    background: none;
+    border: none;
+    font-family: inherit;
+  }
+
+  .detail-image-container {
+    margin: 0 24px 24px;
+    position: relative;
+  }
+
+  .detail-image {
+    width: 100%;
+    height: 340px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .detail-image canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .detail-content {
+    padding: 0 24px;
+  }
+
+  .detail-tag-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .detail-tag {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 4px 10px;
+    border: 1px solid var(--hai);
+    color: var(--hai);
+  }
+
+  .detail-tag.accent {
+    border-color: var(--bengara);
+    color: var(--bengara);
+    background: rgba(139,58,34,0.05);
+  }
+
+  .detail-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    line-height: 1.3;
+    color: var(--sumi);
+    margin-bottom: 6px;
+  }
+
+  .detail-title-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--hai);
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .detail-divider {
+    width: 40px;
+    height: 1px;
+    background: var(--bengara);
+    margin: 20px 0;
+  }
+
+  .detail-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .detail-meta-item {}
+  .detail-meta-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--hai);
+    margin-bottom: 4px;
+  }
+  .detail-meta-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--sumi);
+    letter-spacing: 0.05em;
+  }
+
+  .story-section {
+    margin-bottom: 28px;
+  }
+
+  .story-heading {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--bengara);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .story-heading::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--bengara), transparent);
+    opacity: 0.3;
+  }
+
+  .story-text {
+    font-size: 14px;
+    line-height: 2;
+    color: var(--sumi-mid);
+    letter-spacing: 0.04em;
+  }
+
+  .restoration-card {
+    background: var(--washi-dark);
+    padding: 20px;
+    margin-bottom: 24px;
+    border-left: 3px solid var(--koke);
+  }
+
+  .restoration-title {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--koke);
+    margin-bottom: 12px;
+  }
+
+  .restoration-text {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--sumi-mid);
+  }
+
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .ba-item {}
+  .ba-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--hai);
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .ba-image {
+    height: 110px;
+    background: var(--sumi-mid);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ba-image canvas { width: 100% !important; height: 100% !important; }
+
+  .rent-action {
+    position: sticky;
+    bottom: 80px;
+    margin: 0 24px 16px;
+    padding: 18px 20px;
+    background: var(--sumi);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    z-index: 50;
+    transition: background 0.2s;
+  }
+
+  .rent-action:active { background: var(--sumi-mid); }
+
+  .rent-left {}
+  .rent-plan-note {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--hai);
+    margin-bottom: 3px;
+  }
+  .rent-cta {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--shiro);
+    letter-spacing: 0.08em;
+  }
+
+  .rent-arrow {
+    font-size: 20px;
+    color: var(--kincha);
+  }
+
+  /* MY PAGE */
+  .mypage-hero {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid var(--washi-dark);
+    margin-bottom: 4px;
+  }
+
+  .user-greeting {
+    font-size: 13px;
+    color: var(--hai);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+
+  .user-name {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--sumi);
+    letter-spacing: 0.05em;
+    margin-bottom: 20px;
+  }
+
+  .plan-card {
+    background: var(--sumi);
+    padding: 20px;
+    color: var(--shiro);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .plan-card::before {
+    content: '精正堂';
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    font-size: 80px;
+    font-weight: 800;
+    opacity: 0.05;
+    color: var(--shiro);
+    letter-spacing: -0.05em;
+  }
+
+  .plan-card-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--kincha);
+    margin-bottom: 8px;
+  }
+
+  .plan-card-name {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  .plan-card-detail {
+    display: flex;
+    gap: 24px;
+  }
+
+  .pcd-item {}
+  .pcd-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: rgba(250,247,242,0.5);
+    margin-bottom: 3px;
+  }
+
+  .pcd-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--shiro);
+    letter-spacing: 0.05em;
+  }
+
+  .current-rentals {
+    padding: 0 24px;
+  }
+
+  .rental-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--washi-dark);
+    cursor: pointer;
+  }
+
+  .rental-thumb {
+    width: 72px;
+    height: 90px;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .rental-thumb canvas { width: 100% !important; height: 100% !important; }
+
+  .rental-info { flex: 1; }
+
+  .rental-status {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--koke);
+    margin-bottom: 5px;
+  }
+
+  .rental-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--sumi);
+    line-height: 1.4;
+    margin-bottom: 5px;
+  }
+
+  .rental-meta {
+    font-size: 11px;
+    color: var(--hai);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+  }
+
+  .rental-buy-btn {
+    margin-top: 8px;
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 5px 12px;
+    border: 1px solid var(--bengara);
+    color: var(--bengara);
+    cursor: pointer;
+  }
+
+  /* PLAN SELECTION SCREEN */
+  .plan-list {
+    padding: 0 24px;
+  }
+
+  .plan-option {
+    margin-bottom: 12px;
+    border: 1px solid var(--washi-dark);
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+
+  .plan-option.selected {
+    border-color: var(--bengara);
+    background: rgba(139,58,34,0.03);
+  }
+
+  .plan-option.selected::before {
+    content: '✓';
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: var(--bengara);
+    font-size: 14px;
+  }
+
+  .plan-option-tier {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--kincha);
+    margin-bottom: 6px;
+  }
+
+  .plan-option-name {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--sumi);
+    margin-bottom: 4px;
+  }
+
+  .plan-option-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--bengara);
+    letter-spacing: 0.03em;
+    margin-bottom: 10px;
+  }
+
+  .plan-option-desc {
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--hai);
+    letter-spacing: 0.04em;
+  }
+
+  .plan-option-examples {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--sumi-mid);
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+  }
+
+  /* SEARCH BAR */
+  .search-bar {
+    margin: 12px 24px 0;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--sumi);
+    padding-bottom: 10px;
+    gap: 10px;
+  }
+
+  .search-icon { font-size: 14px; color: var(--hai); }
+
+  .search-input {
+    background: none;
+    border: none;
+    font-family: 'Shippori Mincho B1', serif;
+    font-size: 14px;
+    color: var(--sumi);
+    flex: 1;
+    outline: none;
+    letter-spacing: 0.06em;
+  }
+
+  .search-input::placeholder { color: var(--hai); }
+
+  /* FILTER CHIPS */
+  .filter-chips {
+    display: flex;
+    gap: 8px;
+    padding: 14px 24px 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filter-chips::-webkit-scrollbar { display: none; }
+
+  .chip {
+    flex-shrink: 0;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 5px 14px;
+    border: 1px solid var(--washi-dark);
+    color: var(--hai);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    background: var(--shiro);
+  }
+
+  .chip.active {
+    border-color: var(--sumi);
+    color: var(--sumi);
+    background: var(--washi-dark);
+  }
+
+  /* Utility */
+  .mt-4 { margin-top: 4px; }
+  .mb-24 { margin-bottom: 24px; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--sumi);
+    color: var(--shiro);
+    padding: 12px 24px;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 500;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- SCREEN 1: GALLERY HOME -->
+<div class="screen active" id="screen-home">
+  <div class="app-header">
+    <div class="header-top">
+      <div>
+        <div class="logo-mark">IWASAKI</div>
+        <div class="logo-main">岩崎精正堂</div>
+        <div class="logo-en">Seiseidō — The Art of Restoration</div>
+      </div>
+      <div class="header-badge">ご鑑賞中</div>
+    </div>
+  </div>
+
+  <div class="plan-bar" style="margin: 16px 24px 0;">
+    <div>
+      <div class="plan-label">現在のプラン</div>
+      <div class="plan-name">雅 — MIYABI</div>
+    </div>
+    <div class="plan-cycle">¥15,000 / 月</div>
+  </div>
+
+  <div class="section-title">
+    <h2>現在ご鑑賞中の作品</h2>
+    <span class="section-more" onclick="showScreen('screen-mypage')">マイページ →</span>
+  </div>
+
+  <div class="current-work" onclick="showDetail(0)">
+    <div class="current-work-image">
+      <canvas id="c-featured" width="382" height="260"></canvas>
+      <div class="current-work-overlay">
+        <span class="work-tag">江戸後期 · 絹本着色</span>
+        <div class="work-title-large">秋景山水図</div>
+        <div class="work-subtitle">Autumn Mountain Landscape</div>
+      </div>
+    </div>
+    <div class="current-work-info">
+      <div class="info-item">
+        <div class="info-label">作者</div>
+        <div class="info-value">伝・狩野典信</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">修復</div>
+        <div class="info-value">岩崎精正堂</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">返却予定</div>
+        <div class="info-value">5月15日</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" type="text" placeholder="作品・作者・時代を探す">
+  </div>
+
+  <div class="filter-chips">
+    <div class="chip active">すべて</div>
+    <div class="chip">絵画</div>
+    <div class="chip">水墨</div>
+    <div class="chip">花鳥図</div>
+    <div class="chip">山水図</div>
+    <div class="chip">人物図</div>
+    <div class="chip">江戸</div>
+    <div class="chip">明治</div>
+  </div>
+
+  <div class="section-title">
+    <h2>ご鑑賞いただける作品</h2>
+    <span class="section-more">全作品を見る →</span>
+  </div>
+
+  <div class="gallery-grid">
+    <div class="gallery-item" onclick="showDetail(1)">
+      <div class="gallery-item-image">
+        <canvas id="c-g1" width="170" height="226"></canvas>
+      </div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title">牡丹白鷺図</div>
+        <div class="gallery-item-meta">明治中期 · 絹本</div>
+        <div class="gallery-item-price">
+          <span class="availability-dot"></span>鑑賞可能
+        </div>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="showDetail(2)">
+      <div class="gallery-item-image">
+        <canvas id="c-g2" width="170" height="226"></canvas>
+      </div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title">富士遠望図</div>
+        <div class="gallery-item-meta">江戸後期 · 紙本墨画</div>
+        <div class="gallery-item-price">
+          <span class="availability-dot taken"></span>鑑賞中
+        </div>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="showDetail(3)">
+      <div class="gallery-item-image">
+        <canvas id="c-g3" width="170" height="226"></canvas>
+      </div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title">四季花鳥屏風</div>
+        <div class="gallery-item-meta">桃山〜江戸初期</div>
+        <div class="gallery-item-price">
+          <span class="availability-dot"></span>鑑賞可能
+        </div>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="showDetail(4)">
+      <div class="gallery-item-image">
+        <canvas id="c-g4" width="170" height="226"></canvas>
+      </div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title">竹林に鶴</div>
+        <div class="gallery-item-meta">江戸中期 · 紙本</div>
+        <div class="gallery-item-price">
+          <span class="availability-dot"></span>鑑賞可能
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="height: 24px;"></div>
+</div>
+
+<!-- SCREEN 2: DETAIL -->
+<div class="screen" id="screen-detail">
+  <div class="detail-header">
+    <button class="back-btn" onclick="showScreen('screen-home')">← 一覧に戻る</button>
+  </div>
+
+  <div class="detail-image-container">
+    <div class="detail-image">
+      <canvas id="c-detail" width="382" height="340"></canvas>
+    </div>
+  </div>
+
+  <div class="detail-content">
+    <div class="detail-tag-row">
+      <span class="detail-tag accent">修復済</span>
+      <span class="detail-tag">江戸後期</span>
+      <span class="detail-tag">絹本着色</span>
+      <span class="detail-tag">掛軸</span>
+    </div>
+
+    <h1 class="detail-title">秋景山水図</h1>
+    <span class="detail-title-en">Autumn Mountain Landscape</span>
+
+    <div class="detail-meta-grid">
+      <div class="detail-meta-item">
+        <div class="detail-meta-label">推定制作年</div>
+        <div class="detail-meta-value">18世紀後半</div>
+      </div>
+      <div class="detail-meta-item">
+        <div class="detail-meta-label">作者</div>
+        <div class="detail-meta-value">伝・狩野典信</div>
+      </div>
+      <div class="detail-meta-item">
+        <div class="detail-meta-label">素材</div>
+        <div class="detail-meta-value">絹本着色</div>
+      </div>
+      <div class="detail-meta-item">
+        <div class="detail-meta-label">寸法</div>
+        <div class="detail-meta-value">縦 112 × 横 43 cm</div>
+      </div>
+    </div>
+
+    <div class="detail-divider"></div>
+
+    <div class="story-section">
+      <div class="story-heading">作品のこと</div>
+      <p class="story-text">
+        秋の山深くに、人里の灯りが静かに揺れている。霞む遠山、枯れかけた樹木、そして小舟を繋いだ渡し場——この掛軸には、江戸の人々が憧れた「閑寂の秋」がそのまま封じ込められています。<br><br>
+        伝・狩野典信の作とされるこの作品は、狩野派特有の骨太な筆致と、淡い金泥による霞の表現が見事な調和を見せています。長らく旧家の蔵に眠っていましたが、岩崎精正堂による修復によって、その本来の輝きを取り戻しました。
+      </p>
+    </div>
+
+    <div class="restoration-card">
+      <div class="restoration-title">◆ 修復の記録 — 岩崎精正堂</div>
+      <p class="restoration-text">
+        入荷時、絹本の経糸・緯糸の破断が数箇所見られ、彩色部分にも剥落の進行が確認されました。裏打ち紙を慎重に除去し、和紙による補填と膠水による彩色の固着処理を施した後、新たな裏打ちを行いました。表具の軸木も当時の様式に倣い、桐材で新調しています。
+      </p>
+      <div class="before-after">
+        <div class="ba-item">
+          <div class="ba-label">修復前</div>
+          <div class="ba-image"><canvas id="c-before" width="160" height="110"></canvas></div>
+        </div>
+        <div class="ba-item">
+          <div class="ba-label">修復後</div>
+          <div class="ba-image"><canvas id="c-after" width="160" height="110"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="story-section">
+      <div class="story-heading">表具師・岩崎正克より</div>
+      <p class="story-text">
+        この作品と向き合った数週間、江戸の絵師が筆を置いた瞬間のことを何度も想像しました。修復とは、時間を繕うことではなく、作品が持つ本来の「声」を、現代に届ける仕事だと思っています。
+      </p>
+    </div>
+    <div style="height: 100px;"></div>
+  </div>
+
+  <div class="rent-action" onclick="showToast('次回配送に追加しました')">
+    <div class="rent-left">
+      <div class="rent-plan-note">雅プランでご鑑賞いただけます</div>
+      <div class="rent-cta">次回作品として申し込む</div>
+    </div>
+    <div class="rent-arrow">→</div>
+  </div>
+</div>
+
+<!-- SCREEN 3: MY PAGE -->
+<div class="screen" id="screen-mypage">
+  <div class="app-header">
+    <div class="header-top">
+      <div>
+        <div class="logo-mark">MY PAGE</div>
+        <div class="logo-main">マイページ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mypage-hero">
+    <div class="user-greeting">ようこそ、</div>
+    <div class="user-name">山田 花子 様</div>
+
+    <div class="plan-card">
+      <div class="plan-card-label">CURRENT PLAN</div>
+      <div class="plan-card-name">雅 — MIYABI</div>
+      <div class="plan-card-detail">
+        <div class="pcd-item">
+          <div class="pcd-label">月額</div>
+          <div class="pcd-value">¥15,000</div>
+        </div>
+        <div class="pcd-item">
+          <div class="pcd-label">配送サイクル</div>
+          <div class="pcd-value">月1回</div>
+        </div>
+        <div class="pcd-item">
+          <div class="pcd-label">ご利用歴</div>
+          <div class="pcd-value">8ヶ月</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>現在ご鑑賞中</h2>
+  </div>
+
+  <div class="current-rentals">
+    <div class="rental-item" onclick="showDetail(0)">
+      <div class="rental-thumb">
+        <canvas id="c-my1" width="72" height="90"></canvas>
+      </div>
+      <div class="rental-info">
+        <div class="rental-status">● 鑑賞中</div>
+        <div class="rental-title">秋景山水図</div>
+        <div class="rental-meta">
+          伝・狩野典信 / 江戸後期<br>
+          返却予定：5月15日
+        </div>
+        <span class="rental-buy-btn" onclick="event.stopPropagation(); showToast('購入のご相談を受け付けました')">購入について相談する</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top: 8px;">
+    <h2>鑑賞履歴</h2>
+  </div>
+
+  <div class="current-rentals">
+    <div class="rental-item">
+      <div class="rental-thumb" style="background: var(--washi-dark); display:flex; align-items:center; justify-content:center;">
+        <canvas id="c-hist1" width="72" height="90"></canvas>
+      </div>
+      <div class="rental-info">
+        <div class="rental-status" style="color: var(--hai);">返却済</div>
+        <div class="rental-title">牡丹白鷺図</div>
+        <div class="rental-meta">
+          明治中期 / 絹本<br>
+          鑑賞期間：2025年3月
+        </div>
+      </div>
+    </div>
+    <div class="rental-item">
+      <div class="rental-thumb">
+        <canvas id="c-hist2" width="72" height="90"></canvas>
+      </div>
+      <div class="rental-info">
+        <div class="rental-status" style="color: var(--hai);">返却済</div>
+        <div class="rental-title">竹林に鶴</div>
+        <div class="rental-meta">
+          江戸中期 / 紙本<br>
+          鑑賞期間：2025年2月
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top: 8px;">
+    <h2>プランを変更する</h2>
+  </div>
+
+  <div class="plan-list">
+    <div class="plan-option" onclick="selectPlan(this, '暁')">
+      <div class="plan-option-tier">ENTRY</div>
+      <div class="plan-option-name">暁 — AKATSUKI</div>
+      <div class="plan-option-price">¥3,000 / 月</div>
+      <div class="plan-option-desc">古美術との最初の出会いに。隔月でお届けします。</div>
+      <div class="plan-option-examples">例）江戸の版画、小品の花鳥図など</div>
+    </div>
+    <div class="plan-option selected" onclick="selectPlan(this, '雅')">
+      <div class="plan-option-tier">STANDARD</div>
+      <div class="plan-option-name">雅 — MIYABI</div>
+      <div class="plan-option-price">¥15,000 / 月</div>
+      <div class="plan-option-desc">日本画の本流を、毎月お手元へ。</div>
+      <div class="plan-option-examples">例）掛軸、絹本着色、近代日本画など</div>
+    </div>
+    <div class="plan-option" onclick="selectPlan(this, '幽玄')">
+      <div class="plan-option-tier">PREMIUM</div>
+      <div class="plan-option-name">幽玄 — YUGEN</div>
+      <div class="plan-option-price">¥50,000 / 月</div>
+      <div class="plan-option-desc">美術館級の作品を、生活空間に。購入優先権付き。</div>
+      <div class="plan-option-examples">例）重要作家作品、大判屏風、貴重な古写本など</div>
+    </div>
+    <div class="plan-option" onclick="selectPlan(this, '至高')">
+      <div class="plan-option-tier">COLLECTOR</div>
+      <div class="plan-option-name">至高 — SHIKO</div>
+      <div class="plan-option-price">¥300,000〜 / 月</div>
+      <div class="plan-option-desc">日本最高峰の古美術を、専任キュレーターと共に。<br>国内外のVIPコレクター向け。</div>
+      <div class="plan-option-examples">例）国宝級・重文指定相当作品など</div>
+    </div>
+  </div>
+  <div style="height: 24px;"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="nav-item active" onclick="switchNav(this, 'screen-home')" id="nav-home">
+    <div class="nav-icon">🖼</div>
+    <div class="nav-label">ギャラリー</div>
+  </div>
+  <div class="nav-item" onclick="switchNav(this, 'screen-detail')" id="nav-story">
+    <div class="nav-icon">📜</div>
+    <div class="nav-label">作品詳細</div>
+  </div>
+  <div class="nav-item" onclick="switchNav(this, 'screen-mypage')" id="nav-my">
+    <div class="nav-icon">👤</div>
+    <div class="nav-label">マイページ</div>
+  </div>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== ART RENDERING ====================
+function drawArtwork(canvasId, type, seed) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const rng = mulberry32(seed);
+
+  // Washi paper background
+  const bg = ctx.createLinearGradient(0, 0, w, h);
+  const palettes = [
+    ['#C4B49A', '#8A7060', '#5C4A3A', '#3A2E24'],  // warm brown
+    ['#A8B4A0', '#7A8A72', '#4A5C44', '#2E3A2A'],  // moss green
+    ['#B4A0A8', '#8A7080', '#5C4050', '#3A2430'],  // dusty rose
+    ['#A0A8B4', '#708090', '#405060', '#2A3040'],  // slate blue
+    ['#C0A870', '#907840', '#604820', '#402808'],  // ochre gold
+  ];
+  const pal = palettes[seed % palettes.length];
+
+  // Background - aged paper/silk
+  bg.addColorStop(0, mix(pal[0], '#F5F0E8', 0.4));
+  bg.addColorStop(1, mix(pal[1], '#EAE3D5', 0.3));
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, w, h);
+
+  // Paper texture
+  for (let i = 0; i < 2000; i++) {
+    ctx.fillStyle = `rgba(${rng()*80+160|0},${rng()*60+140|0},${rng()*40+100|0},${rng()*0.04})`;
+    ctx.fillRect(rng()*w, rng()*h, 1, 1);
+  }
+
+  if (type === 'landscape') drawLandscape(ctx, w, h, pal, rng, seed);
+  else if (type === 'flower') drawFlower(ctx, w, h, pal, rng, seed);
+  else if (type === 'bamboo') drawBamboo(ctx, w, h, pal, rng, seed);
+  else if (type === 'fuji') drawFuji(ctx, w, h, pal, rng, seed);
+  else drawLandscape(ctx, w, h, pal, rng, seed);
+
+  // Aging effects - foxing spots
+  for (let i = 0; i < 20; i++) {
+    const x = rng()*w, y = rng()*h, r = rng()*4+1;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(140,100,60,${rng()*0.12})`;
+    ctx.fill();
+  }
+
+  // Subtle vignette
+  const vig = ctx.createRadialGradient(w/2, h/2, h*0.3, w/2, h/2, h*0.8);
+  vig.addColorStop(0, 'transparent');
+  vig.addColorStop(1, 'rgba(40,28,20,0.2)');
+  ctx.fillStyle = vig;
+  ctx.fillRect(0, 0, w, h);
+}
+
+function drawLandscape(ctx, w, h, pal, rng, seed) {
+  // Misty mountains in background
+  for (let layer = 3; layer >= 0; layer--) {
+    const y = h * (0.25 + layer * 0.12);
+    const opacity = 0.15 + layer * 0.15;
+    ctx.beginPath();
+    ctx.moveTo(0, y + rng()*20);
+    for (let x = 0; x <= w; x += w/8) {
+      const peak = y - rng()*h*0.18*(1-layer*0.1);
+      ctx.quadraticCurveTo(x + w/16, peak, x + w/8, y + rng()*15);
+    }
+    ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+    ctx.fillStyle = `rgba(${hexToRgb(pal[layer])},${opacity})`;
+    ctx.fill();
+  }
+
+  // Trees / pine silhouettes
+  for (let i = 0; i < 6; i++) {
+    const tx = rng()*w;
+    const ty = h * (0.45 + rng()*0.25);
+    const th = h * (0.15 + rng()*0.2);
+    drawPineTree(ctx, tx, ty, th, pal[2], 0.5 + rng()*0.5);
+  }
+
+  // Water / mist in foreground
+  ctx.fillStyle = `rgba(${hexToRgb(pal[0])},0.2)`;
+  ctx.fillRect(0, h*0.78, w, h*0.22);
+
+  // Ink detail lines
+  ctx.strokeStyle = `rgba(${hexToRgb(pal[3])},0.4)`;
+  ctx.lineWidth = 0.8;
+  for (let i = 0; i < 8; i++) {
+    ctx.beginPath();
+    ctx.moveTo(rng()*w, h*0.3 + rng()*h*0.4);
+    ctx.bezierCurveTo(rng()*w, rng()*h, rng()*w, rng()*h, rng()*w, h*0.3 + rng()*h*0.4);
+    ctx.stroke();
+  }
+
+  // Red seal mark
+  drawSeal(ctx, w*0.85, h*0.08, 18, rng);
+}
+
+function drawFlower(ctx, w, h, pal, rng, seed) {
+  // Background wash
+  const wash = ctx.createRadialGradient(w*0.4, h*0.4, 10, w*0.4, h*0.4, w*0.8);
+  wash.addColorStop(0, `rgba(${hexToRgb(pal[0])},0.1)`);
+  wash.addColorStop(1, 'transparent');
+  ctx.fillStyle = wash;
+  ctx.fillRect(0, 0, w, h);
+
+  // Main peony/flower
+  const cx = w * 0.45, cy = h * 0.38;
+  for (let ring = 4; ring >= 0; ring--) {
+    const petals = 5 + ring*2;
+    const r = 15 + ring * 14;
+    for (let p = 0; p < petals; p++) {
+      const angle = (p / petals) * Math.PI * 2 + ring * 0.3;
+      ctx.beginPath();
+      ctx.ellipse(
+        cx + Math.cos(angle)*r*0.6,
+        cy + Math.sin(angle)*r*0.6,
+        r*0.5, r*0.3, angle, 0, Math.PI*2
+      );
+      const brightness = 1 - ring*0.08;
+      ctx.fillStyle = `rgba(${hexToRgb(pal[1])},${0.5*brightness})`;
+      ctx.fill();
+    }
+  }
+
+  // Leaves/branches
+  ctx.strokeStyle = `rgba(${hexToRgb(pal[2])},0.7)`;
+  ctx.lineWidth = 1.5;
+  for (let i = 0; i < 4; i++) {
+    const angle = rng()*Math.PI*2;
+    const len = 40 + rng()*50;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.quadraticCurveTo(
+      cx + Math.cos(angle-0.3)*len*0.6,
+      cy + Math.sin(angle-0.3)*len*0.6,
+      cx + Math.cos(angle)*len,
+      cy + Math.sin(angle)*len
+    );
+    ctx.stroke();
+  }
+
+  // Second flower (smaller)
+  const cx2 = cx + 50 + rng()*30, cy2 = cy + 40 + rng()*30;
+  for (let ring = 2; ring >= 0; ring--) {
+    const petals = 5;
+    const r = 8 + ring * 9;
+    for (let p = 0; p < petals; p++) {
+      const angle = (p/petals)*Math.PI*2 + ring*0.4;
+      ctx.beginPath();
+      ctx.ellipse(cx2+Math.cos(angle)*r*0.6, cy2+Math.sin(angle)*r*0.6, r*0.45, r*0.28, angle, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${hexToRgb(pal[0])},0.5)`;
+      ctx.fill();
+    }
+  }
+
+  // Bird (egret silhouette)
+  ctx.fillStyle = `rgba(250,247,242,0.9)`;
+  ctx.beginPath();
+  ctx.ellipse(w*0.7, h*0.25, 8, 5, -0.3, 0, Math.PI*2);
+  ctx.fill();
+  ctx.strokeStyle = `rgba(${hexToRgb(pal[3])},0.6)`;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(w*0.75, h*0.25);
+  ctx.lineTo(w*0.82, h*0.23);
+  ctx.stroke();
+
+  drawSeal(ctx, w*0.82, h*0.08, 16, rng);
+}
+
+function drawBamboo(ctx, w, h, pal, rng, seed) {
+  // Multiple bamboo stalks
+  for (let s = 0; s < 7; s++) {
+    const x = (s/7)*w*0.9 + w*0.05 + rng()*20;
+    const sway = (rng()-0.5) * 0.08;
+    ctx.strokeStyle = `rgba(${hexToRgb(pal[2])},${0.4+rng()*0.5})`;
+    ctx.lineWidth = 2 + rng()*3;
+    ctx.beginPath();
+    ctx.moveTo(x, h);
+    ctx.bezierCurveTo(x+sway*h, h*0.7, x+sway*h*1.5, h*0.4, x+sway*h*2+rng()*20, 0);
+    ctx.stroke();
+
+    // Nodes
+    for (let n = 1; n < 6; n++) {
+      const ny = h - (n/6)*h;
+      ctx.strokeStyle = `rgba(${hexToRgb(pal[3])},0.5)`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x-4, ny);
+      ctx.lineTo(x+4, ny);
+      ctx.stroke();
+    }
+
+    // Leaves
+    for (let l = 0; l < 5+rng()*5|0; l++) {
+      const ly = rng()*h;
+      const lx = x + sway*ly*2;
+      const angle = (rng()-0.5)*1.5 - 0.5;
+      const len = 20 + rng()*30;
+      ctx.strokeStyle = `rgba(${hexToRgb(pal[2])},${0.5+rng()*0.4})`;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(lx, ly);
+      ctx.quadraticCurveTo(lx+Math.cos(angle)*len*0.5, ly+Math.sin(angle)*len*0.5-5, lx+Math.cos(angle)*len, ly+Math.sin(angle)*len);
+      ctx.stroke();
+    }
+  }
+
+  // Crane (tsuru)
+  drawCrane(ctx, w*0.6, h*0.2, 30, rng);
+  drawSeal(ctx, w*0.1, h*0.08, 15, rng);
+}
+
+function drawFuji(ctx, w, h, pal, rng, seed) {
+  // Sky - soft gradient
+  const sky = ctx.createLinearGradient(0, 0, 0, h*0.6);
+  sky.addColorStop(0, 'rgba(180,200,220,0.4)');
+  sky.addColorStop(1, 'rgba(220,210,190,0.1)');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, h*0.6);
+
+  // Mt. Fuji
+  const fx = w/2, fy = h*0.15;
+  ctx.beginPath();
+  ctx.moveTo(fx, fy);
+  ctx.lineTo(fx - w*0.45, h*0.55);
+  ctx.lineTo(fx + w*0.45, h*0.55);
+  ctx.closePath();
+  ctx.fillStyle = `rgba(${hexToRgb(pal[3])},0.5)`;
+  ctx.fill();
+
+  // Snow cap
+  ctx.beginPath();
+  ctx.moveTo(fx, fy);
+  ctx.lineTo(fx - w*0.1, h*0.28);
+  ctx.lineTo(fx + w*0.1, h*0.28);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(245,240,232,0.9)';
+  ctx.fill();
+
+  // Mist bands
+  for (let i = 0; i < 4; i++) {
+    const my = h*(0.45 + i*0.08);
+    ctx.fillStyle = `rgba(${hexToRgb(pal[0])},0.15)`;
+    ctx.fillRect(0, my, w, 12);
+  }
+
+  // Pine trees silhouettes
+  for (let i = 0; i < 8; i++) {
+    drawPineTree(ctx, (i/8)*w + rng()*20, h*0.58 + rng()*10, h*0.12, pal[3], 0.6);
+  }
+
+  // Lake/water
+  const lake = ctx.createLinearGradient(0, h*0.7, 0, h);
+  lake.addColorStop(0, `rgba(${hexToRgb(pal[0])},0.25)`);
+  lake.addColorStop(1, `rgba(${hexToRgb(pal[1])},0.15)`);
+  ctx.fillStyle = lake;
+  ctx.fillRect(0, h*0.7, w, h*0.3);
+
+  // Fuji reflection in water (inverted, blurred)
+  ctx.save();
+  ctx.globalAlpha = 0.2;
+  ctx.translate(fx, h*0.7);
+  ctx.scale(1, -0.3);
+  ctx.beginPath();
+  ctx.moveTo(0, -h*0.55);
+  ctx.lineTo(-w*0.4, 0);
+  ctx.lineTo(w*0.4, 0);
+  ctx.closePath();
+  ctx.fillStyle = `rgba(${hexToRgb(pal[3])},0.8)`;
+  ctx.fill();
+  ctx.restore();
+
+  drawSeal(ctx, w*0.88, h*0.06, 14, rng);
+}
+
+function drawPineTree(ctx, x, y, height, color, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = `rgba(${hexToRgb(color)},1)`;
+  for (let tier = 0; tier < 3; tier++) {
+    const ty = y - height*(0.3+tier*0.3);
+    const tw = height * (0.5 - tier*0.12);
+    ctx.beginPath();
+    ctx.moveTo(x, ty - height*0.25);
+    ctx.lineTo(x - tw, ty + height*0.08);
+    ctx.lineTo(x + tw, ty + height*0.08);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawCrane(ctx, x, y, size, rng) {
+  ctx.save();
+  ctx.fillStyle = 'rgba(250,247,242,0.92)';
+  ctx.strokeStyle = 'rgba(40,30,20,0.5)';
+  ctx.lineWidth = 0.8;
+  // Body
+  ctx.beginPath();
+  ctx.ellipse(x, y, size*0.5, size*0.25, 0.2, 0, Math.PI*2);
+  ctx.fill(); ctx.stroke();
+  // Neck/head
+  ctx.beginPath();
+  ctx.moveTo(x+size*0.4, y-size*0.1);
+  ctx.quadraticCurveTo(x+size*0.7, y-size*0.5, x+size*0.6, y-size*0.6);
+  ctx.stroke();
+  // Wing extended
+  ctx.beginPath();
+  ctx.moveTo(x, y-size*0.1);
+  ctx.lineTo(x-size*0.8, y-size*0.4);
+  ctx.lineTo(x-size*0.3, y+size*0.1);
+  ctx.fillStyle = 'rgba(240,235,225,0.8)';
+  ctx.fill(); ctx.stroke();
+  // Red crown
+  ctx.beginPath();
+  ctx.arc(x+size*0.55, y-size*0.62, size*0.06, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(180,60,40,0.8)';
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSeal(ctx, x, y, size, rng) {
+  ctx.save();
+  ctx.fillStyle = 'rgba(180,60,40,0.7)';
+  ctx.strokeStyle = 'rgba(140,40,20,0.5)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.rect(x - size/2, y - size/2, size, size);
+  ctx.fill(); ctx.stroke();
+  ctx.fillStyle = 'rgba(250,247,242,0.9)';
+  ctx.font = `bold ${size*0.45}px 'Shippori Mincho B1', serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('精', x, y - size*0.15);
+  ctx.fillText('正', x, y + size*0.15);
+  ctx.restore();
+}
+
+// Before image (damaged)
+function drawDamaged(canvasId) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const rng = mulberry32(42);
+
+  ctx.fillStyle = '#8A7060';
+  ctx.fillRect(0, 0, w, h);
+
+  // Landscape sketch
+  ctx.strokeStyle = 'rgba(40,28,20,0.4)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < w; x += w/6) {
+    ctx.beginPath();
+    ctx.moveTo(x, h*0.5 + rng()*20);
+    ctx.quadraticCurveTo(x+w/12, h*0.25 - rng()*30, x+w/6, h*0.5 + rng()*20);
+    ctx.stroke();
+  }
+
+  // Damage effects
+  ctx.fillStyle = 'rgba(200,180,140,0.3)';
+  for (let i = 0; i < 30; i++) {
+    ctx.beginPath();
+    ctx.arc(rng()*w, rng()*h, rng()*8+2, 0, Math.PI*2);
+    ctx.fill();
+  }
+  // Tear lines
+  ctx.strokeStyle = 'rgba(60,40,20,0.5)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(w*0.3, 0); ctx.lineTo(w*0.25, h*0.4);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(w*0.7, h*0.2); ctx.lineTo(w*0.75, h*0.8);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(100,80,50,0.2)';
+  ctx.fillRect(0, 0, w*0.4, h*0.3);
+
+  const label = ctx.createLinearGradient(0,0,w,0);
+  label.addColorStop(0,'rgba(0,0,0,0.5)');
+  label.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle = label;
+  ctx.fillRect(0, 0, w, h);
+}
+
+// Helper functions
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
+function mix(hex1, hex2, t) {
+  const r1=parseInt(hex1.slice(1,3),16), g1=parseInt(hex1.slice(3,5),16), b1=parseInt(hex1.slice(5,7),16);
+  const r2=parseInt(hex2.slice(1,3),16), g2=parseInt(hex2.slice(3,5),16), b2=parseInt(hex2.slice(5,7),16);
+  return `#${((r1*(1-t)+r2*t)|0).toString(16).padStart(2,'0')}${((g1*(1-t)+g2*t)|0).toString(16).padStart(2,'0')}${((b1*(1-t)+b2*t)|0).toString(16).padStart(2,'0')}`;
+}
+
+function mulberry32(a) {
+  return function() {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    var t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+}
+
+// ==================== NAVIGATION ====================
+const artworks = [
+  { type: 'landscape', seed: 1 },
+  { type: 'flower', seed: 2 },
+  { type: 'fuji', seed: 3 },
+  { type: 'bamboo', seed: 4 },
+  { type: 'landscape', seed: 5 },
+];
+
+let currentDetail = 0;
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  updateNav(id);
+}
+
+function switchNav(el, screenId) {
+  showScreen(screenId);
+}
+
+function updateNav(screenId) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (screenId === 'screen-home') document.getElementById('nav-home').classList.add('active');
+  else if (screenId === 'screen-detail') document.getElementById('nav-story').classList.add('active');
+  else if (screenId === 'screen-mypage') document.getElementById('nav-my').classList.add('active');
+}
+
+function showDetail(idx) {
+  currentDetail = idx;
+  const art = artworks[idx];
+  showScreen('screen-detail');
+  setTimeout(() => {
+    drawArtwork('c-detail', art.type, art.seed);
+    drawDamaged('c-before');
+    drawArtwork('c-after', art.type, art.seed);
+  }, 50);
+}
+
+function selectPlan(el, name) {
+  document.querySelectorAll('.plan-option').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  showToast(`${name}プランを選択しました`);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ==================== INIT ====================
+window.addEventListener('DOMContentLoaded', () => {
+  // Featured artwork
+  drawArtwork('c-featured', 'landscape', 1);
+  // Gallery items
+  drawArtwork('c-g1', 'flower', 2);
+  drawArtwork('c-g2', 'fuji', 3);
+  drawArtwork('c-g3', 'bamboo', 4);
+  drawArtwork('c-g4', 'landscape', 5);
+  // Mypage thumbnails
+  drawArtwork('c-my1', 'landscape', 1);
+  drawArtwork('c-hist1', 'flower', 2);
+  drawArtwork('c-hist2', 'bamboo', 4);
+});
+</script>
+</body>
+</html>

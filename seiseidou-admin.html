@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1E1A16">
+<title>精正堂 — 管理システム</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#1E1A16; --ink-mid:#2E2820; --ink-light:#3E3428;
+  --washi:#F5F0E8; --washi-dark:#EAE3D5; --washi-mid:#D8CDB8;
+  --koke:#4A6040; --koke-light:#6B8A60; --koke-pale:rgba(74,96,64,0.15);
+  --bengara:#8B3A22; --bengara-light:#B04E30;
+  --kincha:#A8873A; --kincha-light:#C4A24E;
+  --hai:#7A6E64; --shiro:#FAF7F2;
+  --border:rgba(250,247,242,0.1);
+  --border-mid:rgba(250,247,242,0.06);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Shippori Mincho B1',serif;
+  background:var(--ink);color:var(--washi);
+  min-height:100vh;max-width:430px;margin:0 auto;
+  position:relative;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1000;opacity:0.8;
+}
+.screen{display:none;min-height:100vh;padding-bottom:80px;animation:fadeIn 0.35s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* HEADER */
+.app-header{
+  padding:52px 20px 18px;background:var(--ink-mid);
+  position:sticky;top:0;z-index:100;
+  border-bottom:1px solid var(--border);
+}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start}
+.logo-mark{font-size:10px;letter-spacing:0.25em;color:var(--hai)}
+.logo-main{font-size:19px;font-weight:800;letter-spacing:0.06em;color:var(--shiro);line-height:1}
+.logo-en{font-family:'Cormorant Garamond',serif;font-size:11px;font-style:italic;color:var(--hai);letter-spacing:0.1em;margin-top:3px}
+.admin-badge{
+  background:var(--bengara);color:var(--shiro);
+  font-size:9px;padding:3px 9px;letter-spacing:0.15em;
+  align-self:flex-start;margin-top:4px;
+}
+
+/* STATUS TABS */
+.status-tabs{
+  display:flex;background:var(--ink-mid);
+  border-bottom:1px solid var(--border);
+  overflow-x:auto;scrollbar-width:none;
+}
+.status-tabs::-webkit-scrollbar{display:none}
+.stab{
+  flex-shrink:0;padding:10px 16px;font-size:11px;letter-spacing:0.1em;
+  color:var(--hai);cursor:pointer;white-space:nowrap;
+  border-bottom:2px solid transparent;transition:all 0.2s;
+}
+.stab.active{color:var(--kincha);border-bottom-color:var(--kincha)}
+
+/* SUMMARY CARDS */
+.summary-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);margin-bottom:1px}
+.sum-card{background:var(--ink-mid);padding:14px 12px}
+.sum-label{font-size:9px;letter-spacing:0.15em;color:var(--hai);margin-bottom:5px}
+.sum-value{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--shiro);line-height:1}
+.sum-unit{font-family:'Shippori Mincho B1',serif;font-size:10px;color:var(--hai);margin-left:2px}
+.sum-sub{font-size:9px;color:var(--koke-light);margin-top:3px;letter-spacing:0.08em}
+.sum-card.alert .sum-value{color:var(--bengara-light)}
+.sum-card.gold .sum-value{color:var(--kincha-light)}
+
+/* SECTION TITLE */
+.sec-title{
+  padding:18px 20px 10px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.sec-title h2{font-size:13px;font-weight:600;letter-spacing:0.15em;color:var(--washi-mid)}
+.sec-title h2::before{content:'▎';color:var(--koke-light);margin-right:7px;font-size:10px}
+.sec-more{font-size:10px;color:var(--hai);cursor:pointer;letter-spacing:0.1em}
+
+/* ALERT BANNER */
+.alert-banner{
+  margin:0 20px 2px;padding:12px 14px;
+  background:rgba(139,58,34,0.15);
+  border-left:3px solid var(--bengara);
+  display:flex;justify-content:space-between;align-items:center;cursor:pointer;
+}
+.ab-left{}
+.ab-tag{font-size:9px;letter-spacing:0.18em;color:var(--bengara-light);margin-bottom:3px}
+.ab-text{font-size:13px;color:var(--shiro);letter-spacing:0.04em}
+.ab-arrow{font-size:16px;color:var(--bengara-light)}
+
+/* WORK LIST ITEM */
+.work-list{padding:0 20px}
+.work-item{
+  background:var(--ink-light);margin-bottom:8px;cursor:pointer;
+  transition:background 0.15s;
+  display:flex;gap:0;overflow:hidden;
+}
+.work-item:active{background:var(--ink-mid)}
+.work-thumb{width:72px;height:90px;flex-shrink:0;position:relative;overflow:hidden}
+.work-thumb canvas{width:100%!important;height:100%!important}
+.work-item-body{flex:1;padding:12px 14px}
+.work-status-dot{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  margin-right:5px;vertical-align:middle;
+}
+.work-status-dot.active{background:var(--kincha);animation:pulse 2s infinite}
+.work-status-dot.done{background:var(--koke)}
+.work-status-dot.new{background:var(--bengara-light);animation:blink 1.5s infinite}
+.work-status-label{font-size:10px;letter-spacing:0.12em;color:var(--hai)}
+.work-item-title{font-size:14px;font-weight:600;letter-spacing:0.05em;color:var(--shiro);margin:4px 0 3px;line-height:1.3}
+.work-item-meta{font-size:11px;color:var(--hai);letter-spacing:0.05em;line-height:1.6}
+.work-item-tag{
+  display:inline-block;font-size:9px;padding:2px 7px;
+  border:1px solid var(--border);color:var(--hai);
+  margin-top:5px;letter-spacing:0.1em;
+}
+.work-item-tag.green{border-color:var(--koke);color:var(--koke-light)}
+.work-item-tag.gold{border-color:var(--kincha);color:var(--kincha-light)}
+.work-item-tag.red{border-color:var(--bengara);color:var(--bengara-light)}
+
+/* QUICK ACTIONS */
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 20px;margin-bottom:4px}
+.qa-btn{
+  padding:14px 12px;background:var(--ink-light);
+  cursor:pointer;display:flex;align-items:center;gap:10px;
+  transition:background 0.2s;border:1px solid var(--border-mid);
+}
+.qa-btn:active{background:var(--ink-mid)}
+.qa-icon{font-size:18px}
+.qa-text{font-size:12px;letter-spacing:0.08em;color:var(--washi-mid);line-height:1.4}
+.qa-sub{font-size:10px;color:var(--hai);margin-top:2px}
+
+/* ===== WORK DETAIL ===== */
+.detail-header{
+  background:var(--ink-mid);padding:52px 20px 20px;
+  position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);
+}
+.back-btn{
+  display:flex;align-items:center;gap:7px;font-size:12px;
+  color:var(--hai);cursor:pointer;background:none;border:none;
+  font-family:inherit;letter-spacing:0.1em;margin-bottom:14px;
+}
+.detail-work-title{font-size:18px;font-weight:800;letter-spacing:0.05em;color:var(--shiro);margin-bottom:4px}
+.detail-work-sub{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:var(--hai)}
+.detail-phase-badge{
+  display:inline-block;margin-top:12px;padding:5px 12px;
+  font-size:10px;letter-spacing:0.18em;
+  background:var(--koke);color:var(--shiro);
+}
+.detail-phase-badge.gold{background:var(--kincha);color:var(--ink)}
+.detail-phase-badge.red{background:var(--bengara)}
+
+.detail-content{padding:20px}
+
+/* META TABLE */
+.meta-table{background:var(--ink-light);margin-bottom:16px}
+.mt-row{display:flex;border-bottom:1px solid var(--border-mid);padding:10px 14px;gap:12px}
+.mt-row:last-child{border-bottom:none}
+.mt-key{font-size:10px;letter-spacing:0.12em;color:var(--hai);width:80px;flex-shrink:0;padding-top:2px}
+.mt-val{font-size:13px;color:var(--shiro);letter-spacing:0.04em;flex:1;line-height:1.5}
+.mt-val.gold{color:var(--kincha-light)}
+.mt-val.green{color:var(--koke-light)}
+
+/* RESTORATION CONTROL */
+.restoration-panel{background:var(--ink-light);margin-bottom:16px;overflow:hidden}
+.rp-header{
+  padding:12px 14px;background:rgba(74,96,64,0.12);
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--border-mid);
+}
+.rp-title{font-size:11px;letter-spacing:0.15em;color:var(--koke-light)}
+.rp-stage{font-size:11px;color:var(--kincha-light);letter-spacing:0.1em}
+
+.rp-steps{padding:14px}
+.rp-step{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;cursor:pointer}
+.rp-step:last-child{margin-bottom:0}
+.rp-step-dot{
+  width:20px;height:20px;border-radius:50%;flex-shrink:0;
+  border:1.5px solid var(--border);background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:var(--hai);margin-top:1px;transition:all 0.2s;
+}
+.rp-step.done .rp-step-dot{background:var(--koke);border-color:var(--koke);color:var(--shiro)}
+.rp-step.current .rp-step-dot{background:var(--kincha);border-color:var(--kincha);color:var(--ink);animation:pulse 2s infinite}
+.rp-step-content{flex:1}
+.rp-step-title{font-size:13px;color:var(--shiro);letter-spacing:0.05em;margin-bottom:2px}
+.rp-step.done .rp-step-title{color:var(--hai)}
+.rp-step.pending .rp-step-title{color:var(--hai)}
+.rp-step-date{font-size:10px;color:var(--hai);letter-spacing:0.08em}
+.rp-step-note{font-size:11px;color:var(--washi-mid);margin-top:4px;line-height:1.7;letter-spacing:0.03em}
+.rp-step.pending .rp-step-note{color:var(--hai)}
+
+.rp-advance-btn{
+  margin:0 14px 14px;padding:12px;
+  background:var(--koke);color:var(--shiro);
+  font-family:inherit;font-size:13px;letter-spacing:0.1em;
+  border:none;cursor:pointer;width:calc(100% - 28px);
+  text-align:center;transition:background 0.2s;
+}
+.rp-advance-btn:active{background:var(--koke-light)}
+
+/* APPRAISAL PANEL */
+.appraisal-panel{background:var(--ink-light);margin-bottom:16px}
+.ap-header{padding:12px 14px;background:rgba(168,135,58,0.1);border-bottom:1px solid var(--border-mid)}
+.ap-title{font-size:11px;letter-spacing:0.15em;color:var(--kincha-light)}
+.ap-body{padding:14px}
+.ap-value-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.ap-label{font-size:11px;color:var(--hai);letter-spacing:0.08em}
+.ap-value{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--kincha-light)}
+.ap-appraiser{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--border-mid)}
+.ap-avatar{width:28px;height:28px;border-radius:50%;background:var(--koke);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--shiro);flex-shrink:0}
+.ap-appraiser-info{flex:1}
+.ap-appraiser-name{font-size:12px;color:var(--shiro);letter-spacing:0.05em}
+.ap-appraiser-role{font-size:10px;color:var(--hai);letter-spacing:0.08em}
+.ap-appraiser-status{font-size:10px;color:var(--koke-light);letter-spacing:0.1em}
+
+/* OFFER PANEL */
+.offer-panel{
+  background:rgba(139,58,34,0.12);border:1px solid rgba(139,58,34,0.3);
+  margin-bottom:16px;padding:14px;
+}
+.op-tag{font-size:9px;letter-spacing:0.2em;color:var(--bengara-light);margin-bottom:8px;animation:blink 2s infinite}
+.op-title{font-size:14px;font-weight:600;color:var(--shiro);letter-spacing:0.05em;margin-bottom:8px}
+.op-amount{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--bengara-light);margin-bottom:12px}
+.op-from{font-size:11px;color:var(--hai);letter-spacing:0.06em;margin-bottom:14px;line-height:1.7}
+.op-actions{display:flex;gap:8px}
+.op-btn{flex:1;padding:11px;text-align:center;font-family:inherit;font-size:12px;letter-spacing:0.1em;cursor:pointer;border:none;transition:all 0.2s}
+.op-btn.accept{background:var(--bengara);color:var(--shiro)}
+.op-btn.relay{background:var(--ink-light);color:var(--washi-mid);border:1px solid var(--border)}
+.op-btn:active{opacity:0.7}
+
+/* COMMUNICATION */
+.comms-list{padding:0 20px}
+.comm-item{
+  background:var(--ink-light);margin-bottom:6px;
+  padding:12px 14px;cursor:pointer;display:flex;gap:12px;align-items:flex-start;
+  transition:background 0.2s;
+}
+.comm-item:active{background:var(--ink-mid)}
+.comm-avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;letter-spacing:0}
+.comm-avatar.owner{background:var(--koke)}
+.comm-avatar.user{background:rgba(168,135,58,0.3);color:var(--kincha-light)}
+.comm-avatar.appraiser{background:rgba(74,96,64,0.3);color:var(--koke-light)}
+.comm-body{flex:1}
+.comm-header{display:flex;justify-content:space-between;margin-bottom:4px}
+.comm-name{font-size:13px;font-weight:600;color:var(--shiro);letter-spacing:0.04em}
+.comm-time{font-size:10px;color:var(--hai)}
+.comm-preview{font-size:12px;color:var(--hai);letter-spacing:0.04em;line-height:1.6}
+.comm-tags{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.comm-tag{font-size:9px;padding:2px 7px;border:1px solid var(--border-mid);color:var(--hai);letter-spacing:0.08em}
+.comm-badge{
+  min-width:18px;height:18px;border-radius:9px;background:var(--bengara);
+  color:var(--shiro);font-size:9px;display:flex;align-items:center;justify-content:center;
+  padding:0 4px;flex-shrink:0;margin-top:2px;
+}
+
+/* REVENUE */
+.revenue-content{padding:20px}
+.rev-period-tabs{display:flex;gap:0;margin-bottom:16px;background:var(--ink-light)}
+.rpt{flex:1;padding:10px;text-align:center;font-size:11px;letter-spacing:0.1em;color:var(--hai);cursor:pointer}
+.rpt.active{background:var(--koke);color:var(--shiro)}
+
+.rev-total-card{
+  background:linear-gradient(135deg,var(--ink-light),var(--ink-mid));
+  padding:20px;margin-bottom:12px;position:relative;overflow:hidden;
+  border:1px solid var(--border);
+}
+.rev-total-card::before{
+  content:'¥';position:absolute;right:0;top:-15px;
+  font-family:'Cormorant Garamond',serif;font-size:100px;
+  color:rgba(250,247,242,0.03);line-height:1;
+}
+.rtc-label{font-size:10px;letter-spacing:0.2em;color:var(--kincha-light);margin-bottom:8px}
+.rtc-amount{font-family:'Cormorant Garamond',serif;font-size:42px;color:var(--shiro);line-height:1;margin-bottom:14px}
+.rtc-breakdown{display:flex;gap:20px}
+.rtcb-item{flex:1}
+.rtcb-label{font-size:9px;letter-spacing:0.12em;color:var(--hai);margin-bottom:3px}
+.rtcb-value{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--washi-mid)}
+
+.rev-works-table{background:var(--ink-light);margin-bottom:12px}
+.rwt-header{display:flex;padding:8px 14px;border-bottom:1px solid var(--border-mid)}
+.rwt-col{font-size:9px;letter-spacing:0.12em;color:var(--hai)}
+.rwt-row{display:flex;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border-mid);cursor:pointer}
+.rwt-row:last-child{border-bottom:none}
+.rwt-work{flex:1}
+.rwt-work-title{font-size:12px;color:var(--shiro);letter-spacing:0.04em}
+.rwt-work-owner{font-size:10px;color:var(--hai);margin-top:2px}
+.rwt-rev{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--kincha-light);width:70px;text-align:right}
+.rwt-owner-share{font-size:11px;color:var(--hai);width:60px;text-align:right}
+.rwt-bar-col{width:50px;padding-left:8px}
+.rwt-bar{height:3px;background:var(--koke);border-radius:2px}
+
+.escrow-notice{
+  padding:14px;background:rgba(74,96,64,0.1);
+  border:1px solid rgba(74,96,64,0.25);margin-bottom:12px;
+}
+.en-title{font-size:10px;letter-spacing:0.15em;color:var(--koke-light);margin-bottom:6px}
+.en-text{font-size:12px;line-height:1.8;color:var(--hai);letter-spacing:0.04em}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;background:var(--ink-mid);
+  border-top:1px solid var(--border);display:flex;z-index:200;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:12px 8px 10px;cursor:pointer;position:relative}
+.nav-item.active .nav-icon{color:var(--kincha-light)}
+.nav-item.active .nav-label{color:var(--kincha-light)}
+.nav-item.active::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1.5px;background:var(--kincha)}
+.nav-icon{font-size:19px;color:var(--hai);margin-bottom:3px;line-height:1}
+.nav-label{font-size:9px;color:var(--hai);letter-spacing:0.1em}
+.nav-badge{
+  position:absolute;top:8px;right:18%;
+  min-width:14px;height:14px;border-radius:7px;
+  background:var(--bengara);color:var(--shiro);
+  font-size:8px;display:flex;align-items:center;justify-content:center;
+  padding:0 3px;
+}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:100px;left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--koke);color:var(--shiro);
+  padding:11px 22px;font-size:12px;letter-spacing:0.1em;
+  opacity:0;transition:all 0.3s;z-index:500;
+  pointer-events:none;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Network */
+.network-list{padding:0 20px}
+.network-item{
+  background:var(--ink-light);margin-bottom:6px;
+  padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;
+}
+.ni-avatar{width:40px;height:40px;border-radius:50%;background:var(--koke);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--shiro)}
+.ni-info{flex:1}
+.ni-name{font-size:13px;color:var(--shiro);letter-spacing:0.05em;margin-bottom:2px}
+.ni-role{font-size:10px;color:var(--hai);letter-spacing:0.06em;line-height:1.5}
+.ni-tag{display:inline-block;font-size:9px;padding:2px 7px;border:1px solid var(--koke);color:var(--koke-light);letter-spacing:0.1em;margin-top:4px}
+.ni-tag.evaluator{border-color:var(--kincha);color:var(--kincha-light)}
+.ni-status{font-size:10px;color:var(--koke-light);letter-spacing:0.08em;text-align:right}
+</style>
+</head>
+<body>
+
+<!-- ===== SCREEN: DASHBOARD ===== -->
+<div class="screen active" id="screen-dash">
+  <div class="app-header">
+    <div class="header-top">
+      <div>
+        <div class="logo-mark">SEISEIDŌ ADMIN</div>
+        <div class="logo-main">岩崎精正堂</div>
+        <div class="logo-en">Management System</div>
+      </div>
+      <div class="admin-badge">管理者専用</div>
+    </div>
+  </div>
+
+  <div class="status-tabs">
+    <div class="stab active">全体</div>
+    <div class="stab">修復中</div>
+    <div class="stab">貸出中</div>
+    <div class="stab">新規依頼</div>
+    <div class="stab">要対応</div>
+  </div>
+
+  <div class="summary-row">
+    <div class="sum-card">
+      <div class="sum-label">管理作品数</div>
+      <div class="sum-value">12<span class="sum-unit">点</span></div>
+      <div class="sum-sub">修復中 3 · 貸出中 8</div>
+    </div>
+    <div class="sum-card gold">
+      <div class="sum-label">今月売上</div>
+      <div class="sum-value">84<span class="sum-unit">万</span></div>
+      <div class="sum-sub">先月比 +18%</div>
+    </div>
+    <div class="sum-card alert">
+      <div class="sum-label">要対応</div>
+      <div class="sum-value">3<span class="sum-unit">件</span></div>
+      <div class="sum-sub">購入打診 1 · 新規 2</div>
+    </div>
+  </div>
+
+  <div class="alert-banner" onclick="showScreen('screen-work')">
+    <div class="ab-left">
+      <div class="ab-tag">● 新着 — 購入打診</div>
+      <div class="ab-text">UAE コレクターより「秋景山水図」に¥480,000の購入打診</div>
+    </div>
+    <div class="ab-arrow">→</div>
+  </div>
+
+  <div class="sec-title">
+    <h2>作品一覧</h2>
+    <span class="sec-more">すべて見る →</span>
+  </div>
+
+  <div class="work-list">
+    <div class="work-item" onclick="showScreen('screen-work')">
+      <div class="work-thumb"><canvas id="c-w1" width="72" height="90"></canvas></div>
+      <div class="work-item-body">
+        <div><span class="work-status-dot done"></span><span class="work-status-label">貸出中</span></div>
+        <div class="work-item-title">秋景山水図</div>
+        <div class="work-item-meta">田中一郎 様 / 伝・狩野典信<br>修復完了 2024.11</div>
+        <span class="work-item-tag gold">購入打診あり</span>
+      </div>
+    </div>
+    <div class="work-item" onclick="showScreen('screen-work')">
+      <div class="work-thumb"><canvas id="c-w2" width="72" height="90"></canvas></div>
+      <div class="work-item-body">
+        <div><span class="work-status-dot active"></span><span class="work-status-label">修復中 — 第3工程</span></div>
+        <div class="work-item-title">牡丹白鷺図</div>
+        <div class="work-item-meta">佐藤美智子 様 / 不詳<br>受付 2025.01 / 完了予定 2025.04</div>
+        <span class="work-item-tag green">進捗中</span>
+      </div>
+    </div>
+    <div class="work-item" onclick="showScreen('screen-work')">
+      <div class="work-thumb"><canvas id="c-w3" width="72" height="90"></canvas></div>
+      <div class="work-item-body">
+        <div><span class="work-status-dot new"></span><span class="work-status-label">新規受付 — 査定待ち</span></div>
+        <div class="work-item-title">（仮）山水の掛軸</div>
+        <div class="work-item-meta">鈴木健太 様 / 詳細不明<br>受付 2025.04.10</div>
+        <span class="work-item-tag red">要査定</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">
+    <h2>クイックアクション</h2>
+  </div>
+
+  <div class="quick-actions">
+    <div class="qa-btn" onclick="showScreen('screen-work')">
+      <div class="qa-icon">📋</div>
+      <div><div class="qa-text">修復進捗を更新</div><div class="qa-sub">3件が更新待ち</div></div>
+    </div>
+    <div class="qa-btn" onclick="showScreen('screen-revenue')">
+      <div class="qa-icon">💴</div>
+      <div><div class="qa-text">収益レポート</div><div class="qa-sub">今月分を確認</div></div>
+    </div>
+    <div class="qa-btn" onclick="showScreen('screen-comms')">
+      <div class="qa-icon">✉️</div>
+      <div><div class="qa-text">未読メッセージ</div><div class="qa-sub">3件の未読あり</div></div>
+    </div>
+    <div class="qa-btn" onclick="showScreen('screen-network')">
+      <div class="qa-icon">🔗</div>
+      <div><div class="qa-text">ネットワーク</div><div class="qa-sub">表具師 8名・評価者 5名</div></div>
+    </div>
+  </div>
+  <div style="height:24px"></div>
+</div>
+
+<!-- ===== SCREEN: WORK DETAIL ===== -->
+<div class="screen" id="screen-work">
+  <div class="detail-header">
+    <button class="back-btn" onclick="showScreen('screen-dash')">← ダッシュボードに戻る</button>
+    <div class="detail-work-title">秋景山水図</div>
+    <div class="detail-work-sub">Attr. Kanō Minenobu — 田中一郎 様 所有</div>
+    <div class="detail-phase-badge gold">貸出中 — 修復完了</div>
+  </div>
+
+  <div class="detail-content">
+
+    <!-- META -->
+    <div class="meta-table">
+      <div class="mt-row"><div class="mt-key">所有者</div><div class="mt-val">田中一郎 様</div></div>
+      <div class="mt-row"><div class="mt-key">受付日</div><div class="mt-val">2024年8月12日</div></div>
+      <div class="mt-row"><div class="mt-key">修復完了</div><div class="mt-val green">2024年11月1日（56日）</div></div>
+      <div class="mt-row"><div class="mt-key">修復費用</div><div class="mt-val">¥120,000（所有者負担 50% = ¥60,000）</div></div>
+      <div class="mt-row"><div class="mt-key">貸出プラン</div><div class="mt-val gold">幽玄 ¥50,000/月</div></div>
+      <div class="mt-row"><div class="mt-key">累計収益</div><div class="mt-val gold">¥108,000（6ヶ月）</div></div>
+      <div class="mt-row"><div class="mt-key">鑑賞者数</div><div class="mt-val">342名 / 8カ国</div></div>
+    </div>
+
+    <!-- PURCHASE OFFER -->
+    <div class="offer-panel">
+      <div class="op-tag">● 新着 — 購入打診</div>
+      <div class="op-title">UAE コレクターより購入打診</div>
+      <div class="op-amount">¥480,000</div>
+      <div class="op-from">
+        アラブ首長国連邦 / ドバイ<br>
+        至高プラン会員 · コレクター認証済<br>
+        「修復の質と作品の気品に深く感動した。ぜひ所有したい。」
+      </div>
+      <div class="op-actions">
+        <button class="op-btn relay" onclick="showToast('田中様に購入打診を転送しました')">所有者に転送</button>
+        <button class="op-btn accept" onclick="showToast('詳細交渉を開始しました')">交渉を開始する</button>
+      </div>
+    </div>
+
+    <!-- APPRAISAL -->
+    <div class="appraisal-panel">
+      <div class="ap-header"><div class="ap-title">◆ 価値査定 — 評価者ネットワーク</div></div>
+      <div class="ap-body">
+        <div class="ap-value-row">
+          <div class="ap-label">修復前 推定価値</div>
+          <div class="ap-value">¥80,000〜120,000</div>
+        </div>
+        <div class="ap-value-row">
+          <div class="ap-label">修復後 推定価値</div>
+          <div class="ap-value" style="color:var(--kincha-light)">¥350,000〜500,000</div>
+        </div>
+        <div class="ap-value-row" style="border-top:1px solid var(--border-mid);padding-top:10px">
+          <div class="ap-label">現在のオファー</div>
+          <div class="ap-value" style="color:var(--bengara-light)">¥480,000</div>
+        </div>
+        <div class="ap-appraiser">
+          <div class="ap-avatar">山</div>
+          <div class="ap-appraiser-info">
+            <div class="ap-appraiser-name">山田博文 氏 — 美術評価士</div>
+            <div class="ap-appraiser-role">日本美術商協同組合 認定 / 経験38年</div>
+          </div>
+          <div class="ap-appraiser-status">査定済 ✓</div>
+        </div>
+        <div class="ap-appraiser">
+          <div class="ap-avatar" style="background:var(--bengara)">中</div>
+          <div class="ap-appraiser-info">
+            <div class="ap-appraiser-name">中村雅代 氏 — 近世絵画専門</div>
+            <div class="ap-appraiser-role">元 国立博物館学芸員</div>
+          </div>
+          <div class="ap-appraiser-status">査定済 ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESTORATION CONTROL -->
+    <div class="restoration-panel">
+      <div class="rp-header">
+        <div class="rp-title">◆ 修復記録</div>
+        <div class="rp-stage">全工程 完了</div>
+      </div>
+      <div class="rp-steps">
+        <div class="rp-step done">
+          <div class="rp-step-dot">✓</div>
+          <div class="rp-step-content">
+            <div class="rp-step-title">受付・査定</div>
+            <div class="rp-step-date">2024.08.12</div>
+            <div class="rp-step-note">絹本破断3箇所・彩色剥落（上部）確認。修復費用¥120,000で合意。</div>
+          </div>
+        </div>
+        <div class="rp-step done">
+          <div class="rp-step-dot">✓</div>
+          <div class="rp-step-content">
+            <div class="rp-step-title">解体・裏打除去</div>
+            <div class="rp-step-date">2024.09.03〜09.14</div>
+            <div class="rp-step-note">旧裏打ち除去完了。過去の修復痕跡（明治期？）発見。田中様に報告済。</div>
+          </div>
+        </div>
+        <div class="rp-step done">
+          <div class="rp-step-dot">✓</div>
+          <div class="rp-step-content">
+            <div class="rp-step-title">洗浄・補填</div>
+            <div class="rp-step-date">2024.09.15〜10.02</div>
+            <div class="rp-step-note">水洗い2回実施。越前和紙にて破損3箇所補填。</div>
+          </div>
+        </div>
+        <div class="rp-step done">
+          <div class="rp-step-dot">✓</div>
+          <div class="rp-step-content">
+            <div class="rp-step-title">彩色固着・新裏打ち・表装</div>
+            <div class="rp-step-date">2024.10.03〜10.28</div>
+            <div class="rp-step-note">膠水にて固着。本美濃紙2枚裏打ち。軸木は桐材で新調。</div>
+          </div>
+        </div>
+        <div class="rp-step done">
+          <div class="rp-step-dot">✓</div>
+          <div class="rp-step-content">
+            <div class="rp-step-title">完成・田中様への報告</div>
+            <div class="rp-step-date">2024.11.01</div>
+            <div class="rp-step-note">修復報告書・全工程写真を田中様に送付。貸出開始承諾取得。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: COMMUNICATIONS ===== -->
+<div class="screen" id="screen-comms">
+  <div class="app-header">
+    <div class="header-top">
+      <div>
+        <div class="logo-mark">COMMUNICATIONS</div>
+        <div class="logo-main">連絡管理</div>
+      </div>
+      <div class="admin-badge">未読 3</div>
+    </div>
+  </div>
+
+  <div class="status-tabs">
+    <div class="stab active">すべて</div>
+    <div class="stab">所有者</div>
+    <div class="stab">ユーザー</div>
+    <div class="stab">評価者</div>
+    <div class="stab">金融機関</div>
+  </div>
+
+  <div class="comms-list" style="margin-top:12px">
+
+    <div class="comm-item" onclick="showToast('田中様との会話を開きました')">
+      <div class="comm-avatar owner">田</div>
+      <div class="comm-body">
+        <div class="comm-header">
+          <div class="comm-name">田中一郎 様（所有者）</div>
+          <div class="comm-time">14:32</div>
+        </div>
+        <div class="comm-preview">UAE のオファーについて、少し考えさせてください。先祖の形見なので…</div>
+        <div class="comm-tags">
+          <span class="comm-tag">秋景山水図</span>
+          <span class="comm-tag">購入打診</span>
+        </div>
+      </div>
+      <div class="comm-badge">2</div>
+    </div>
+
+    <div class="comm-item" onclick="showToast('エスクロー機関との会話を開きました')">
+      <div class="comm-avatar" style="background:var(--info);font-size:11px">金</div>
+      <div class="comm-body">
+        <div class="comm-header">
+          <div class="comm-name">第三者金融機関（エスクロー）</div>
+          <div class="comm-time">11:05</div>
+        </div>
+        <div class="comm-preview">3月分の収益配分処理が完了しました。明細を添付します。</div>
+        <div class="comm-tags">
+          <span class="comm-tag">収益配分</span>
+          <span class="comm-tag">3月分</span>
+        </div>
+      </div>
+      <div class="comm-badge">1</div>
+    </div>
+
+    <div class="comm-item" onclick="showToast('新規受付案件の会話を開きました')">
+      <div class="comm-avatar owner" style="background:var(--bengara)">鈴</div>
+      <div class="comm-body">
+        <div class="comm-header">
+          <div class="comm-name">鈴木健太 様（新規所有者）</div>
+          <div class="comm-time">昨日</div>
+        </div>
+        <div class="comm-preview">祖父の蔵を整理していたら掛軸が3本出てきました。価値があるかどうかわからないのですが…</div>
+        <div class="comm-tags">
+          <span class="comm-tag">新規</span>
+          <span class="comm-tag">査定依頼</span>
+        </div>
+      </div>
+      <div class="comm-badge">1</div>
+    </div>
+
+    <div class="comm-item" onclick="showToast('山田博文氏との会話を開きました')">
+      <div class="comm-avatar appraiser">山</div>
+      <div class="comm-body">
+        <div class="comm-header">
+          <div class="comm-name">山田博文 氏（美術評価士）</div>
+          <div class="comm-time">2日前</div>
+        </div>
+        <div class="comm-preview">新しく受け付けた「山水の掛軸」ですが、写真を見る限り幕末〜明治初期の可能性があります。実物を確認させてください。</div>
+        <div class="comm-tags">
+          <span class="comm-tag">鈴木様案件</span>
+          <span class="comm-tag">査定</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="comm-item" onclick="showToast('UAEコレクターとの会話を開きました')">
+      <div class="comm-avatar user">🇦🇪</div>
+      <div class="comm-body">
+        <div class="comm-header">
+          <div class="comm-name">Khalid Al-Rashid（至高会員）</div>
+          <div class="comm-time">3日前</div>
+        </div>
+        <div class="comm-preview">I would like to formally offer ¥480,000 for the Autumn Mountain Landscape. The restoration quality is exceptional.</div>
+        <div class="comm-tags">
+          <span class="comm-tag">秋景山水図</span>
+          <span class="comm-tag">購入打診</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div style="height:24px"></div>
+</div>
+
+<!-- ===== SCREEN: REVENUE ===== -->
+<div class="screen" id="screen-revenue">
+  <div class="app-header">
+    <div class="header-top">
+      <div>
+        <div class="logo-mark">REVENUE</div>
+        <div class="logo-main">収益管理</div>
+      </div>
+      <div class="admin-badge">2025年4月</div>
+    </div>
+  </div>
+
+  <div class="revenue-content">
+    <div class="rev-period-tabs">
+      <div class="rpt">1月</div>
+      <div class="rpt">2月</div>
+      <div class="rpt">3月</div>
+      <div class="rpt active">4月</div>
+    </div>
+
+    <div class="rev-total-card">
+      <div class="rtc-label">MONTHLY REVENUE — APRIL 2025</div>
+      <div class="rtc-amount">¥840,000</div>
+      <div class="rtc-breakdown">
+        <div class="rtcb-item">
+          <div class="rtcb-label">サブスク収益</div>
+          <div class="rtcb-value">¥620,000</div>
+        </div>
+        <div class="rtcb-item">
+          <div class="rtcb-label">手数料収入(15%)</div>
+          <div class="rtcb-value">¥93,000</div>
+        </div>
+        <div class="rtcb-item">
+          <div class="rtcb-label">修復費用</div>
+          <div class="rtcb-value">¥127,000</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-title" style="padding:0 0 10px">
+      <h2>作品別 収益内訳</h2>
+    </div>
+
+    <div class="rev-works-table">
+      <div class="rwt-header">
+        <div class="rwt-col" style="flex:1">作品</div>
+        <div class="rwt-col" style="width:70px;text-align:right">収益</div>
+        <div class="rwt-col" style="width:60px;text-align:right">所有者分</div>
+        <div class="rwt-col" style="width:58px;text-align:right">比率</div>
+      </div>
+      <div class="rwt-row" onclick="showScreen('screen-work')">
+        <div class="rwt-work">
+          <div class="rwt-work-title">秋景山水図</div>
+          <div class="rwt-work-owner">田中一郎 様 / 幽玄</div>
+        </div>
+        <div class="rwt-rev">¥50,000</div>
+        <div class="rwt-owner-share">¥8,500</div>
+        <div class="rwt-bar-col"><div class="rwt-bar" style="width:100%"></div></div>
+      </div>
+      <div class="rwt-row">
+        <div class="rwt-work">
+          <div class="rwt-work-title">富士遠望図</div>
+          <div class="rwt-work-owner">中村洋子 様 / 雅</div>
+        </div>
+        <div class="rwt-rev">¥15,000</div>
+        <div class="rwt-owner-share">¥2,550</div>
+        <div class="rwt-bar-col"><div class="rwt-bar" style="width:30%"></div></div>
+      </div>
+      <div class="rwt-row">
+        <div class="rwt-work">
+          <div class="rwt-work-title">竹林に鶴</div>
+          <div class="rwt-work-owner">高橋誠 様 / 雅</div>
+        </div>
+        <div class="rwt-rev">¥15,000</div>
+        <div class="rwt-owner-share">¥2,025</div>
+        <div class="rwt-bar-col"><div class="rwt-bar" style="width:30%"></div></div>
+      </div>
+      <div class="rwt-row">
+        <div class="rwt-work">
+          <div class="rwt-work-title">四季花鳥屏風</div>
+          <div class="rwt-work-owner">渡辺家 様 / 至高</div>
+        </div>
+        <div class="rwt-rev">¥300,000</div>
+        <div class="rwt-owner-share">¥51,000</div>
+        <div class="rwt-bar-col"><div class="rwt-bar" style="width:100%;background:var(--kincha)"></div></div>
+      </div>
+    </div>
+
+    <div class="escrow-notice">
+      <div class="en-title">◆ エスクロー管理 — 独立した第三者機関</div>
+      <div class="en-text">
+        全ての収益は岩崎精正堂とは独立した金融機関が管理。所有者・ユーザー双方のリスクをゼロにします。毎月25日に各所有者への振込が自動実行されます。<br><br>
+        今月の所有者振込予定総額：<span style="color:var(--kincha-light);font-size:14px">¥64,075</span>（4名）
+      </div>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: NETWORK ===== -->
+<div class="screen" id="screen-network">
+  <div class="app-header">
+    <div class="header-top">
+      <div>
+        <div class="logo-mark">NETWORK</div>
+        <div class="logo-main">職人・評価者</div>
+      </div>
+      <div class="admin-badge">精正堂ネットワーク</div>
+    </div>
+  </div>
+
+  <div class="sec-title">
+    <h2>表具師ネットワーク</h2>
+    <span class="sec-more">8名 登録中</span>
+  </div>
+
+  <div class="network-list">
+    <div class="network-item" onclick="showToast('岩崎正克（岩崎精正堂）の詳細を開きました')">
+      <div class="ni-avatar">岩</div>
+      <div class="ni-info">
+        <div class="ni-name">岩崎正克 — 岩崎精正堂（代表）</div>
+        <div class="ni-role">表具師 / 修復専門<br>富山県 · 経験32年</div>
+        <span class="ni-tag">主担当</span>
+      </div>
+      <div class="ni-status">稼働中</div>
+    </div>
+    <div class="network-item" onclick="showToast('森田雄次の詳細を開きました')">
+      <div class="ni-avatar" style="background:var(--ink-light);color:var(--koke-light)">森</div>
+      <div class="ni-info">
+        <div class="ni-name">森田雄次 — 森田表具店</div>
+        <div class="ni-role">表具師 / 修復専門<br>京都府 · 経験28年</div>
+        <span class="ni-tag">修復対応可</span>
+      </div>
+      <div class="ni-status">空き有</div>
+    </div>
+    <div class="network-item" onclick="showToast('川上敬子の詳細を開きました')">
+      <div class="ni-avatar" style="background:var(--ink-light);color:var(--koke-light)">川</div>
+      <div class="ni-info">
+        <div class="ni-name">川上敬子 — 川上表具</div>
+        <div class="ni-role">表具師 / 屏風・襖専門<br>東京都 · 経験21年</div>
+        <span class="ni-tag">修復対応可</span>
+      </div>
+      <div class="ni-status">稼働中</div>
+    </div>
+  </div>
+
+  <div class="sec-title" style="margin-top:8px">
+    <h2>美術品評価者ネットワーク</h2>
+    <span class="sec-more">5名 登録中</span>
+  </div>
+
+  <div class="network-list">
+    <div class="network-item" onclick="showToast('山田博文氏の詳細を開きました')">
+      <div class="ni-avatar" style="background:rgba(168,135,58,0.3);color:var(--kincha-light)">山</div>
+      <div class="ni-info">
+        <div class="ni-name">山田博文 — 美術評価士</div>
+        <div class="ni-role">日本美術商協同組合 認定<br>近世絵画・掛軸 専門 / 経験38年</div>
+        <span class="ni-tag evaluator">価値査定</span>
+        <span class="ni-tag evaluator">格付け</span>
+      </div>
+      <div class="ni-status" style="color:var(--kincha-light)">稼働中</div>
+    </div>
+    <div class="network-item" onclick="showToast('中村雅代氏の詳細を開きました')">
+      <div class="ni-avatar" style="background:rgba(168,135,58,0.2);color:var(--kincha-light)">中</div>
+      <div class="ni-info">
+        <div class="ni-name">中村雅代 — 近世絵画専門家</div>
+        <div class="ni-role">元 国立博物館学芸員<br>江戸〜明治期専門 / 経験25年</div>
+        <span class="ni-tag evaluator">価値査定</span>
+      </div>
+      <div class="ni-status" style="color:var(--kincha-light)">空き有</div>
+    </div>
+    <div class="network-item" onclick="showToast('金融機関連絡先を開きました')">
+      <div class="ni-avatar" style="background:rgba(64,88,112,0.4);color:#8BACC8;font-size:11px">金融</div>
+      <div class="ni-info">
+        <div class="ni-name">第三者金融機関（エスクロー）</div>
+        <div class="ni-role">収益管理・保険・リスクゼロ保証<br>岩崎精正堂から完全独立</div>
+        <span class="ni-tag" style="border-color:#405870;color:#8BACC8">独立機関</span>
+        <span class="ni-tag" style="border-color:#405870;color:#8BACC8">エスクロー</span>
+      </div>
+      <div class="ni-status" style="color:#8BACC8">連携中</div>
+    </div>
+  </div>
+
+  <div style="margin:16px 20px;padding:14px;background:var(--ink-light);border-left:3px solid var(--koke)">
+    <div style="font-size:10px;letter-spacing:0.15em;color:var(--koke-light);margin-bottom:6px">◆ ネットワークの思想</div>
+    <div style="font-size:12px;line-height:1.9;color:var(--hai)">
+      「精正堂」ネットワークへの参加は、同じ思いを持ち、同じ技術水準を持つ方のみ。技量だけでなく、美術品への敬意と修復の倫理観を共有できる職人だけと仕事をしたい。
+    </div>
+    <div style="font-size:11px;color:var(--koke-light);margin-top:8px;font-style:italic">— 岩崎正克</div>
+  </div>
+  <div style="height:24px"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="nav-item active" onclick="switchNav(this,'screen-dash')" id="nav-dash">
+    <div class="nav-icon">⬛</div>
+    <div class="nav-label">ホーム</div>
+  </div>
+  <div class="nav-item" onclick="switchNav(this,'screen-work')" id="nav-work">
+    <div class="nav-icon">🖼</div>
+    <div class="nav-label">作品管理</div>
+  </div>
+  <div class="nav-item" onclick="switchNav(this,'screen-comms')" id="nav-comms">
+    <div class="nav-icon">✉️</div>
+    <div class="nav-label">連絡</div>
+    <div class="nav-badge">3</div>
+  </div>
+  <div class="nav-item" onclick="switchNav(this,'screen-revenue')" id="nav-rev">
+    <div class="nav-icon">💴</div>
+    <div class="nav-label">収益</div>
+  </div>
+  <div class="nav-item" onclick="switchNav(this,'screen-network')" id="nav-net">
+    <div class="nav-icon">🔗</div>
+    <div class="nav-label">NW</div>
+  </div>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== NAVIGATION ====================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  updateNav(id);
+}
+function switchNav(el,id){ showScreen(id); }
+function updateNav(id){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const map={
+    'screen-dash':'nav-dash','screen-work':'nav-work',
+    'screen-comms':'nav-comms','screen-revenue':'nav-rev','screen-network':'nav-net'
+  };
+  if(map[id]) document.getElementById(map[id]).classList.add('active');
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ==================== ART CANVAS ====================
+function mulberry32(a){
+  return function(){
+    a|=0;a=a+0x6D2B79F5|0;
+    var t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296;
+  }
+}
+function hexToRgb(hex){return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`}
+
+function drawThumb(canvasId, type, seed) {
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const w=canvas.width,h=canvas.height;
+  const rng=mulberry32(seed);
+  const pals=[
+    ['#C4B49A','#8A7060','#5C4A3A','#3A2E24'],
+    ['#A8B4A0','#7A8A72','#4A5C44','#2E3A2A'],
+    ['#C0A870','#907840','#604820','#402808'],
+  ];
+  const pal=pals[seed%pals.length];
+  // Dark bg for admin feel
+  ctx.fillStyle='#2E2820';ctx.fillRect(0,0,w,h);
+  for(let i=0;i<800;i++){ctx.fillStyle=`rgba(${100+rng()*60|0},${80+rng()*50|0},${50+rng()*30|0},0.05)`;ctx.fillRect(rng()*w,rng()*h,1,1);}
+  // Art
+  if(type==='landscape'){
+    for(let l=2;l>=0;l--){
+      const y=h*(0.3+l*0.18);
+      ctx.beginPath();ctx.moveTo(0,y);
+      for(let x=0;x<=w;x+=w/4) ctx.quadraticCurveTo(x+w/8,y-rng()*h*0.2,x+w/4,y+rng()*10);
+      ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();
+      ctx.fillStyle=`rgba(${hexToRgb(pal[l])},${0.3+l*0.15})`;ctx.fill();
+    }
+  } else if(type==='flower'){
+    const cx=w*0.45,cy=h*0.4;
+    for(let r=3;r>=0;r--){for(let p=0;p<6;p++){const a=(p/6)*Math.PI*2+r*0.3,rd=8+r*8;ctx.beginPath();ctx.ellipse(cx+Math.cos(a)*rd*0.6,cy+Math.sin(a)*rd*0.6,rd*0.45,rd*0.28,a,0,Math.PI*2);ctx.fillStyle=`rgba(${hexToRgb(pal[1])},${0.5-r*0.05})`;ctx.fill();}}
+  } else {
+    for(let s=0;s<4;s++){const x=(s/4)*w*0.8+w*0.1,sw=(rng()-0.5)*0.1;ctx.strokeStyle=`rgba(${hexToRgb(pal[2])},0.6)`;ctx.lineWidth=2+rng()*2;ctx.beginPath();ctx.moveTo(x,h);ctx.bezierCurveTo(x+sw*h,h*0.6,x+sw*h*1.5,h*0.3,x+sw*h*2,0);ctx.stroke();}
+  }
+  const vig=ctx.createRadialGradient(w/2,h/2,h*0.1,w/2,h/2,h*0.7);
+  vig.addColorStop(0,'transparent');vig.addColorStop(1,'rgba(10,8,5,0.5)');
+  ctx.fillStyle=vig;ctx.fillRect(0,0,w,h);
+  // Status overlay (subtle)
+  ctx.fillStyle='rgba(10,8,5,0.2)';ctx.fillRect(0,0,w,h);
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  drawThumb('c-w1','landscape',1);
+  drawThumb('c-w2','flower',2);
+  drawThumb('c-w3','bamboo',4);
+});
+</script>
+</body>
+</html>
